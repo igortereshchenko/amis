@@ -1,0 +1,18 @@
+//#-----------------
+//input data
+
+int a = read("Enter first number");
+int b = read(Enter second number")
+
+//#-----------------
+//sum data
+
+public int sum(int a, int b)
+{
+         return a+b
+}
+
+//#-----------------
+output data
+
+print (sum (a,b) )
