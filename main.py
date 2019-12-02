@@ -337,14 +337,14 @@ def index_car():
     return render_template('car.html', cars=car)
 
 
-@app.route('/new_car', methods=['GET'])
+@app.route('/get_car', methods=['GET'])
 def new_car():
     car_obj = Car(
-        model="A",
-        color="green",
-        numb=1234,
+        model="B",
+        color="red",
+        numb=1235,
         manuf=100,
-        teacher_id_fk=2
+        teacher_id_fk=3
     )
 
     db = PostgresDb()

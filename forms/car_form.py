@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms import StringField, SubmitField, DateField, HiddenField, IntegerField, BooleanField
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 from datetime import date
 from wtforms import validators
 
