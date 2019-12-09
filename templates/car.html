@@ -24,12 +24,8 @@
             <td> {{car.teacher_id_fk}}</td>
 
             <td>
-                <a href="/edit_car?model={{car.model}}"
-                   title="edit button">
-                    <button type="button" class="btn btn-warning" model="btn_edit_car"
-                            data-user_id="{{car.model}}">Edit
-                    </button>
-                </a>
+                <a href="{{url_for('edit_car', car_model=car.model)}}" title="edit button"
+                   class="btn btn-warning">Edit</a>
 
             </td>
         </tr>

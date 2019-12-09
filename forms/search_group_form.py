@@ -38,8 +38,8 @@ class GroupSearchForm(Form):
                 Group.group_name).filter(Group.group_faculty == faculty)
 
             if method == "POST":
-                if self.group.data and self.group.data != "None":
-                    query = query.filter(Group.group_name == self.group.data)
+                if self.faculty.data and self.faculty.data != "None":
+                    query = query.filter(Group.group_name == self.faculty.data)
                 if self.name.data and self.name.data != "None":
                     query = query.filter(Group.group_faculty == self.name.data)
             result.append(query.all())

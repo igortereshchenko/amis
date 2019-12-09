@@ -48,8 +48,8 @@ def dashboard():
         data[label] = [pie]
         pie_labels.append(label)
 
-    points = db.sqlalchemy_session.query(Subject.subj_name, Subject.subj_hours).distinct(
-        Subject.subj_name, Subject.subj_hours).filter(Subject.subj_name != '').all()
+    points = db.sqlalchemy_session.query(Car.model, Car.manuf).distinct(
+        Car.model, Car.manuf).filter(Car.model != '').all()
 
     semester, final = zip(*points)
     bar = go.Scatter(
@@ -337,35 +337,41 @@ def index_car():
     return render_template('car.html', cars=car)
 
 
-@app.route('/get_car', methods=['GET'])
+@app.route('/get_car', methods=['GET', 'POST'])
 def new_car():
-    car_obj = Car(
-        model="B",
-        color="red",
-        numb=1235,
-        manuf=100,
-        teacher_id_fk=3
-    )
+    form = CarForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('car_form.html', form=form, form_name="New car",
+                                   action="get_car")
+        else:
+            car_obj = Car(
+                model=form.model.data,
+                color=form.color.data,
+                numb=form.numb.data,
+                manuf=form.manuf.data,
+                teacher_id_fk=form.teacher_id_fk.data)
 
-    db = PostgresDb()
-    db.sqlalchemy_session.add(car_obj)
-    db.sqlalchemy_session.commit()
-    return redirect(url_for('index_car'))
+        db = PostgresDb()
+        db.sqlalchemy_session.add(car_obj)
+        db.sqlalchemy_session.commit()
+        return redirect(url_for('index_car'))
+    return render_template('car_form.html', form=form, form_name="New car", action="new_car")
 
 
-@app.route('/edit_car', methods=['GET', 'POST'])
-def edit_car():
+@app.route('/map/<car_model>', methods=['GET', 'POST'])
+def edit_car(car_model):
     form = CarForm()
 
     if request.method == 'GET':
 
         model = request.args.get('model')
+        model = car_model
         db = PostgresDb()
 
         # -------------------------------------------------------------------- filter for "and" google
-        car = db.sqlalchemy_session.query(Car).filter(
-            Car.model == model).one()
-
+        res = db.sqlalchemy_session.query(Car).filter(Car.model == model)
+        car = res.first()
         # fill form and send to discipline
         form.model.data = car.model
         form.color.data = car.color
