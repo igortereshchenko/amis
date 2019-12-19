@@ -3,26 +3,34 @@ from dao.db import PostgresDb
 
 db = PostgresDb()
 
-
 Base.metadata.create_all(db.sqlalchemy_engine)
 
-
 session = db.sqlalchemy_session
-#clear all tables in right order
-session.query(ormMelody).delete()
-session.query(ormGanre).delete()
+
+session.query(student).delete()
+session.query(genre).delete()
+session.query(performer).delete()
+session.query(album).delete()
+session.query(melody).delete()
+session.query(wish).delete()
 
 
-pop = ormGanre(id=1,name = 'pop', popularity = 10000, count_of_subscribers = 10000, year = 2004)
-indie = ormGanre(id=2,name = 'indie', popularity = 10, count_of_subscribers = 10, year = 2007)
-rock = ormGanre(id=3,name = 'rock', popularity = 100, count_of_subscribers = 100, year = 2018)
-
-aaa = ormMelody(id=1,genre_id=2,melody_title = 'AAA', melody_singer = 'Mur', melody_genre = 'indie')
-haisfisch = ormMelody(id=2,genre_id=3,melody_title = 'Haisfisch', melody_singer = 'Ramst', melody_genre = 'rock')
-ccc = ormMelody(id=3,genre_id=2,melody_title = 'CCC', melody_singer = 'Mur', melody_genre = 'indie')
-
-session.add_all([pop, indie, rock, aaa, haisfisch, ccc])
 session.commit()
+# #clear all tables in right order
+# session.query(ormMelody).delete()
+# session.query(ormGanre).delete()
+#
+#
+# pop = ormGanre(id=1,name = 'pop', popularity = 10000, count_of_subscribers = 10000, year = 2004)
+# indie = ormGanre(id=2,name = 'indie', popularity = 10, count_of_subscribers = 10, year = 2007)
+# rock = ormGanre(id=3,name = 'rock', popularity = 100, count_of_subscribers = 100, year = 2018)
+#
+# aaa = ormMelody(id=1,genre_id=2,melody_title = 'AAA', melody_singer = 'Mur', melody_genre = 'indie')
+# haisfisch = ormMelody(id=2,genre_id=3,melody_title = 'Haisfisch', melody_singer = 'Ramst', melody_genre = 'rock')
+# ccc = ormMelody(id=3,genre_id=2,melody_title = 'CCC', melody_singer = 'Mur', melody_genre = 'indie')
+#
+# session.add_all([pop, indie, rock, aaa, haisfisch, ccc])
+# session.commit()
 # session.query(association_table).delete()
 #
 # ukr_asoc = association_table(ormperformer_id='Ukraine', ormcountry_id='Ukraine')
