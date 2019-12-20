@@ -1,18 +1,16 @@
-$("#btnSave").click(function () {
-
-
-    $.ajax({
-    type:"GET",
-    url:"try",
-    data:{
-        'message':$("#txtMessage").val()
-    },
-    dataType:"text",
-    cache:false,
-    success:function (data) {
-        alert(data)
-        return true
-    }
-    });
-
+$(function(){
+	$('button').click(function(){
+		var faculty = $('#faculty').val();
+		$.ajax({
+			url: '/try',
+			data: $('form').serialize(),
+			type: 'POST',
+			success: function(response){
+				console.log(response);
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	});
 });

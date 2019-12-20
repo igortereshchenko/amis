@@ -68,7 +68,8 @@ def some_query():
             return render_template("search_by_facul.html", form=form, action="try", form_name="searchps")
         else:
             fac_parameter = form.faculty.data
-
+            fac_parameter = request.form['faculty']
+            print(fac_parameter)
             result2 = db.sqlalchemy_session.query(genre.psychotype, func.count(genre.psychotype)).join(melody, melody.melody_genre==genre.id).\
                 join(wish, wish.wish_melody==melody.id).join(student, student.id==wish.student_id).filter(student.faculty==fac_parameter).\
                 group_by(student.faculty, genre.psychotype)
@@ -100,7 +101,7 @@ def some_query():
             # big_join = db.sqlalchemy_session.query(student, wish, genre, melody).filter(
             #      student.id == wish.student_id and wish.wish_melody == melody.id and melody.melody_genre==genre.id)
             # print(big_join)
-            return "<h1>success</h1>"
+            return json.dumps({'user':fac_parameter})
 
     return render_template("search_by_facul.html", form=form, action="try", form_name="searchps")
 
