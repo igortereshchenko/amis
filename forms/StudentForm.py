@@ -5,29 +5,29 @@ from wtforms import validators
 class StudentForm(FlaskForm):
     id = HiddenField()
 
-    faculty = StringField("Faculty: ", [
-        validators.DataRequired("Please enter a faculty."),
-        validators.Length(3, 15, "Faculty should be from 3 to 20 symbols")
+    faculty = StringField("Факультет: ", [
+        validators.DataRequired("Це поле є обов'язковим"),
+        validators.Length(2, 15, "Довжина має бути від 2 до 15 символів")
     ])
 
-    group = StringField("Group: ", [
-        validators.DataRequired("Please enter your group."),
+    group = StringField("Група: ", [
+        validators.DataRequired("Це поле є обов'язковим"),
         validators.regexp('[A-Z][A-Z]-[0-9][0-9]')
     ])
 
-    name = StringField("Name: ", [
-        validators.DataRequired("Please enter your name."),
-        validators.Length(3, 15, "Name should be from 3 to 15 symbols")
+    name = StringField("Ім'я: ", [
+        validators.DataRequired("Це поле є обов'язковим"),
+        validators.Length(3, 15, "Ім'я має містити від 3 до 15 символів")
     ])
 
-    surname = StringField("Surname: ", [
-        validators.DataRequired("Please enter surname."),
-        validators.Length(3, 15, "Surname should be from 3 to 15 symbols")
+    surname = StringField("Прізвище: ", [
+        validators.DataRequired("Це поле є обов'язковим"),
+        validators.Length(3, 15, "Прізвище має містити від 3 до 15 символів")
     ])
 
-    username = StringField("Username: ", [
-        validators.DataRequired("Please enter username."),
-        validators.Length(3, 36, "Username should be from 3 to 36 symbols"),
+    username = StringField("Юзернейм: ", [
+        validators.DataRequired("Це поле є обов'язковим"),
+        validators.Length(3, 36, "Юзернейм має містити від 3 до 36 символів"),
         validators.regexp('@([A-Z]|[a-z]|_)*')
     ])
 

@@ -20,6 +20,10 @@ from dao.credentials import *
 import plotly
 import plotly.graph_objects as go
 
+from forms.AlbumForm import AlbumForm
+from forms.MelodyForm import MelodyForm
+from forms.Search_psychotype import SearchPsychForm
+
 db = PostgresDb()
 
 app = Flask(__name__)
@@ -33,7 +37,17 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 def hello_world():
     return render_template("index.html")
 
-@app.route('/try')
+@app.route('/new_album')
+def new_album():
+    form = AlbumForm()
+    return render_template("new_album.html", form = form, action="new_album", form_name = "New album")
+
+@app.route('/new_melody')
+def new_melody():
+    form = MelodyForm()
+    return render_template("new_melody.html", form = form, action="new_melody", form_name = "New melody")
+
+@app.route('/try', methods=['POST', 'GET'])
 def some_query():
     #result=db.sqlalchemy_session.query(student).join(wish).join(melody).join(genre).filter(student.id==wish.student_id
     #and wish.wish_melody==melody.id and melody.melody_genre==genre.id)
@@ -48,39 +62,48 @@ def some_query():
     #     group_by(student.faculty, genre.psychotype).subquery()
     #
     # result2=db.sqlalchemy_session.query(result.c.psychotype).filter(result.c.faculty=='FICT')
+    form = SearchPsychForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template("search_by_facul.html", form=form, action="try", form_name="searchps")
+        else:
+            fac_parameter = form.faculty.data
 
-    result2=db.sqlalchemy_session.query(genre.psychotype, func.count(genre.psychotype)).join(melody, melody.melody_genre==genre.id).\
-        join(wish, wish.wish_melody==melody.id).join(student, student.id==wish.student_id).filter(student.faculty=='FICT').\
-        group_by(student.faculty, genre.psychotype)
-    # psychotypes = list(result2)
-    for row in result2:
-        print(row)
-    psychotypes = dict((genre, count) for genre, count in result2)
-    print(psychotypes)
-    psychotypes_invert = dict((count, genre) for genre, count in result2)
-    print(psychotypes_invert)
-    maxkey = psychotypes_invert[max(psychotypes.values())]
-    print(max(psychotypes.values()), 'and its key ', maxkey)
+            result2 = db.sqlalchemy_session.query(genre.psychotype, func.count(genre.psychotype)).join(melody, melody.melody_genre==genre.id).\
+                join(wish, wish.wish_melody==melody.id).join(student, student.id==wish.student_id).filter(student.faculty==fac_parameter).\
+                group_by(student.faculty, genre.psychotype)
+            # psychotypes = list(result2)
+            for row in result2:
+                print(row)
+            psychotypes = dict((genre, count) for genre, count in result2)
+            print(psychotypes)
+            psychotypes_invert = dict((count, genre) for genre, count in result2)
+            print(psychotypes_invert)
+            maxkey = psychotypes_invert[max(psychotypes.values())]
+            print(max(psychotypes.values()), 'and its key ', maxkey)
 
-    #result3 = db.sqlalchemy_session.query(result2.c.psychotype)
-    # mass = []
-    # for i in range(len(psychotypes)):
-    #     mass.append(psychotypes[i][0])
-    #print(result2)
+            #result3 = db.sqlalchemy_session.query(result2.c.psychotype)
+            # mass = []
+            # for i in range(len(psychotypes)):
+            #     mass.append(psychotypes[i][0])
+            #print(result2)
 
-    # j = join(user_table, address_table,
-    #          user_table.c.id == address_table.c.user_id)
-    # stmt = select([user_table]).select_from(j)
-    # j = join(student, wish, melody, genre, student.id == wish.student_id, wish.wish_melody == melody.id, melody.melody_genre==genre.id)
-    #     # query = select([genre.psychotype]).select_from(select([student.faculty, genre.psychotype]).select_from(j)).where(student.faculty=='FICT')
-    #     # print(query)
-    #     # result = db.sqlalchemy_session.execute(query)
-    #     # for row in result:
-    #     #     print(row)
-    # big_join = db.sqlalchemy_session.query(student, wish, genre, melody).filter(
-    #      student.id == wish.student_id and wish.wish_melody == melody.id and melody.melody_genre==genre.id)
-    # print(big_join)
-    return render_template("search_by_facul.html")
+            # j = join(user_table, address_table,
+            #          user_table.c.id == address_table.c.user_id)
+            # stmt = select([user_table]).select_from(j)
+            # j = join(student, wish, melody, genre, student.id == wish.student_id, wish.wish_melody == melody.id, melody.melody_genre==genre.id)
+            #     # query = select([genre.psychotype]).select_from(select([student.faculty, genre.psychotype]).select_from(j)).where(student.faculty=='FICT')
+            #     # print(query)
+            #     # result = db.sqlalchemy_session.execute(query)
+            #     # for row in result:
+            #     #     print(row)
+            # big_join = db.sqlalchemy_session.query(student, wish, genre, melody).filter(
+            #      student.id == wish.student_id and wish.wish_melody == melody.id and melody.melody_genre==genre.id)
+            # print(big_join)
+            return "<h1>success</h1>"
+
+    return render_template("search_by_facul.html", form=form, action="try", form_name="searchps")
+
 def create_graph():
     # x=[]
     # y=[]
