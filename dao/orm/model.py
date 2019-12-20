@@ -55,7 +55,7 @@ class wish(Base):
     nickname = Column(String(36))
     wish_performer = Column(String(15))
     wish_melody = Column(Integer, ForeignKey('melody.id'))
-    wish_genre = Column(String(15))
+    wish_genre = Column(Integer)
     melody = relationship("melody", back_populates="wish")
     student = relationship("student", back_populates="wish")
 

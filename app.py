@@ -9,11 +9,8 @@ from dao.db import PostgresDb
 from dao import credentials
 from dao.db import *
 
-from forms.CountryForm import CountryForm
-from forms.GanreForm import GanreForm
-
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, func
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, func, select, join
 from sqlalchemy.orm import relationship
 
 from dao.orm.model import *
@@ -36,61 +33,54 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 def hello_world():
     return render_template("index.html")
 
-@app.route('/g')
-def insert_values():
+@app.route('/try')
+def some_query():
+    #result=db.sqlalchemy_session.query(student).join(wish).join(melody).join(genre).filter(student.id==wish.student_id
+    #and wish.wish_melody==melody.id and melody.melody_genre==genre.id)
+    #result = db.sqlalchemy_session.query(student).join(wish, student.id==wish.student_id).join(melody, wish.wish_melody==melody.id).\
+    #    join(genre, melody.melody_genre==genre.id).all()
 
-    # session = db.sqlalchemy_session
-    # # clear all tables in right order
-    # session.query(ormGanre).delete()
-    # session.query(ormMelody).delete()
+    #result=db.sqlalchemy_session.query(student.faculty, genre.psychotype, func.count(genre.psychotype)).filter(student.id==wish.student_id and wish.wish_melody==melody.id
+    #                                                                       and melody.melody_genre==genre.id).group_by(student.faculty, genre.psychotype)
+
+    # result = db.sqlalchemy_session.query(student.faculty, genre.psychotype, func.count(genre.psychotype)).filter(
+    #     student.id == wish.student_id and wish.wish_melody == melody.id and melody.melody_genre==genre.id).\
+    #     group_by(student.faculty, genre.psychotype).subquery()
     #
-    # pop = ormGanre(name='pop', popularity=10000, count_of_subscribers=10000, year=2004)
-    # indie = ormGanre(name='indie', popularity=10, count_of_subscribers=10, year=2007)
-    # rock = ormGanre(name='rock', popularity=100, count_of_subscribers=100, year=2018)
-    #
-    # aaa = ormMelody(melody_title='AAA', melody_singer='Mur', melody_genre='indie')
-    # haisfisch = ormMelody(melody_title='Haisfisch', melody_singer='Ramst', melody_genre='rock')
-    # ccc = ormMelody(melody_title='CCC', melody_singer='Mur', melody_genre='indie')
-    #
-    # session.add_all([pop, indie, rock, aaa, haisfisch, ccc])
+    # result2=db.sqlalchemy_session.query(result.c.psychotype).filter(result.c.faculty=='FICT')
 
-    # session.commit()
-    return ("<h1>success!</h1>")
+    result2=db.sqlalchemy_session.query(genre.psychotype, func.count(genre.psychotype)).join(melody, melody.melody_genre==genre.id).\
+        join(wish, wish.wish_melody==melody.id).join(student, student.id==wish.student_id).filter(student.faculty=='FICT').\
+        group_by(student.faculty, genre.psychotype)
+    # psychotypes = list(result2)
+    for row in result2:
+        print(row)
+    psychotypes = dict((genre, count) for genre, count in result2)
+    print(psychotypes)
+    psychotypes_invert = dict((count, genre) for genre, count in result2)
+    print(psychotypes_invert)
+    maxkey = psychotypes_invert[max(psychotypes.values())]
+    print(max(psychotypes.values()), 'and its key ', maxkey)
 
-@app.route('/s', methods=['GET', 'POST'])
-def show_values():
-    result = db.sqlalchemy_session.query(ormGanre).all()
-    return render_template('ganre.html', ganres=result)
+    #result3 = db.sqlalchemy_session.query(result2.c.psychotype)
+    # mass = []
+    # for i in range(len(psychotypes)):
+    #     mass.append(psychotypes[i][0])
+    #print(result2)
 
-
-# @app.route('/shop', methods=['GET', 'POST'])
-# def show_country():
-#     result = db.sqlalchemy_session.query(ormCountry).all()
-#     return render_template('country.html', countries=result)
-
-@app.route('/i', methods=['GET', 'POST'])
-def new_ganre():
-    form = GanreForm()
-    db = PostgresDb()
-    if request.method == 'POST':
-        if not form.validate():
-            return render_template('form_for_genre.html', form=form, form_name="New Ganre", action="i")
-        else:
-            genre_id = list(db.sqlalchemy_session.query(func.max(ormGanre.id)))[0][0]
-            ganre_obj = ormGanre(
-                id=genre_id+1,
-                name=form.genre_name.data,
-                popularity=form.genre_popularity.data,
-                count_of_subscribers=form.genre_count_of_subscribers.data,
-                year=form.genre_year.data)
-
-            db.sqlalchemy_session.add(ganre_obj)
-            db.sqlalchemy_session.commit()
-
-            return redirect(url_for('show_values'))
-
-    return render_template('form_for_genre.html', form=form, form_name="New Ganre", action='i')
-
+    # j = join(user_table, address_table,
+    #          user_table.c.id == address_table.c.user_id)
+    # stmt = select([user_table]).select_from(j)
+    # j = join(student, wish, melody, genre, student.id == wish.student_id, wish.wish_melody == melody.id, melody.melody_genre==genre.id)
+    #     # query = select([genre.psychotype]).select_from(select([student.faculty, genre.psychotype]).select_from(j)).where(student.faculty=='FICT')
+    #     # print(query)
+    #     # result = db.sqlalchemy_session.execute(query)
+    #     # for row in result:
+    #     #     print(row)
+    # big_join = db.sqlalchemy_session.query(student, wish, genre, melody).filter(
+    #      student.id == wish.student_id and wish.wish_melody == melody.id and melody.melody_genre==genre.id)
+    # print(big_join)
+    return render_template("search_by_facul.html")
 def create_graph():
     # x=[]
     # y=[]
@@ -130,26 +120,6 @@ def create_graph():
 def draw_graph():
     bar = create_graph()
     return render_template('graphics.html', plot=bar)
-# @app.route('/insert', methods=['GET', 'POST'])
-# def new_country():
-#     form = CountryForm()
-#
-#     if request.method == 'POST':
-#         if not form.validate():
-#             return render_template('form_for_country.html', form=form, form_name="New Country", action="insert")
-#         else:
-#             country_obj = ormCountry(
-#                 name=form.country_name.data,
-#                 population=form.country_population.data,
-#                 goverment=form.country_goverment.data,
-#                 location=form.country_location.data)
-#
-#             db.sqlalchemy_session.add(country_obj)
-#             db.sqlalchemy_session.commit()
-#
-#             return redirect(url_for('show_country'))
-#
-#     return render_template('form_for_country.html', form=form, form_name="New Country", action="insert")
 
 if __name__ == '__main__':
     app.run()

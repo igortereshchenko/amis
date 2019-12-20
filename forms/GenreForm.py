@@ -6,14 +6,14 @@ class GenreForm(FlaskForm):
 
     id = HiddenField()
 
-    genre_name = StringField("Genre name: ", [
-        validators.DataRequired("Please enter a genre name."),
-        validators.Length(3, 15, "Value should be from 3 to 15 symbols")
+    genre_name = StringField("Назва жанру: ", [
+        validators.DataRequired("Введіть, будь ласка, назву жанру."),
+        validators.Length(3, 15, "Назва має містити від 3 до 15 символів.")
     ])
 
-    psychotype = StringField("Psychotype: ", [
-        validators.DataRequired("Please enter psychotype."),
-        validators.Length(3, 15, "Value should be from 3 to 20 symbols")
+    psychotype = StringField("Психотип: ", [
+        validators.DataRequired("Введіть, будь ласка, психотип."),
+        validators.Length(3, 15, "Назва має містити від 3 до 15 символів.")
     ])
 
-    submit = SubmitField("Save")
+    submit = SubmitField("Зберегти")

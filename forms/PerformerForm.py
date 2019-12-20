@@ -5,9 +5,9 @@ from wtforms import validators
 class PerformerForm(FlaskForm):
     id = HiddenField()
 
-    name = StringField("Performer name: ", [
-        validators.DataRequired("Please enter a performer name."),
-        validators.Length(3, 15, "Name should be from 3 to 15 symbols")
+    name = StringField("Ім'я виконавця: ", [
+        validators.DataRequired("Це поле є обов'язковим."),
+        validators.Length(3, 15, "Ім'я має містити від 3 до 15 символів.")
     ])
 
-    submit = SubmitField("Save")
+    submit = SubmitField("Зберегти")
