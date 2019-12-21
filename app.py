@@ -41,6 +41,17 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 def hello_world():
     return render_template("index.html")
 
+@app.route('/show_tables')
+def show_tables():
+    students = db.sqlalchemy_session.query(student).all()
+    genres = db.sqlalchemy_session.query(genre).all()
+    performers = db.sqlalchemy_session.query(performer).all()
+    albums = db.sqlalchemy_session.query(album).all()
+    melodies = db.sqlalchemy_session.query(melody).all()
+    wishes = db.sqlalchemy_session.query(wish).all()
+    return render_template("tables.html", students=students, genres=genres,
+                           performers=performers, albums=albums, melodies=melodies, wishes=wishes)
+
 @app.route('/new_album')
 def new_album():
     form = AlbumForm()
