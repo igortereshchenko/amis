@@ -138,6 +138,41 @@ def new_genre():
             return redirect(url_for('show_tables'))
     return render_template("new_genre.html", form = form, action= "new_genre", form_name = "Новий жанр")
 
+@app.route('/edit_genre', methods=['GET', 'POST'])
+def edit_genre():
+    form = GenreForm()
+
+    if request.method == 'GET':
+
+        id = request.args.get('id')
+
+        db = PostgresDb()
+        genre_obj = db.sqlalchemy_session.query(genre).filter(genre.id == id).one()
+
+        # fill form and send to user
+        form.id.data = genre_obj.id
+        form.genre_name.data = genre_obj.name
+        form.psychotype.data = genre_obj.psychotype
+
+        return render_template('new_genre.html', form=form, form_name="Редагувати інформацію про жанр", action="edit_genre")
+
+    else:
+        if not form.validate():
+            return render_template('new_genre.html', form=form, form_name="Редагувати інформацію про жанр", action="edit_genre")
+        else:
+            db = PostgresDb()
+            # find professor
+            genre_obj = db.sqlalchemy_session.query(genre).filter(genre.id == form.id.data).one()
+
+            # update fields from form data
+            genre_obj.id = form.id.data
+            genre_obj.name = form.genre_name.data
+            genre_obj.psychotype = form.psychotype.data
+
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('show_tables'))
+
 @app.route('/new_student', methods=['GET', 'POST'])
 def new_student():
     form = StudentForm()
@@ -237,26 +272,12 @@ def new_wish():
 
 @app.route('/try', methods=['POST', 'GET'])
 def some_query():
-    #result=db.sqlalchemy_session.query(student).join(wish).join(melody).join(genre).filter(student.id==wish.student_id
-    #and wish.wish_melody==melody.id and melody.melody_genre==genre.id)
-    #result = db.sqlalchemy_session.query(student).join(wish, student.id==wish.student_id).join(melody, wish.wish_melody==melody.id).\
-    #    join(genre, melody.melody_genre==genre.id).all()
-
-    #result=db.sqlalchemy_session.query(student.faculty, genre.psychotype, func.count(genre.psychotype)).filter(student.id==wish.student_id and wish.wish_melody==melody.id
-    #                                                                       and melody.melody_genre==genre.id).group_by(student.faculty, genre.psychotype)
-
-    # result = db.sqlalchemy_session.query(student.faculty, genre.psychotype, func.count(genre.psychotype)).filter(
-    #     student.id == wish.student_id and wish.wish_melody == melody.id and melody.melody_genre==genre.id).\
-    #     group_by(student.faculty, genre.psychotype).subquery()
-    #
-    # result2=db.sqlalchemy_session.query(result.c.psychotype).filter(result.c.faculty=='FICT')
     form = SearchPsychForm()
     if request.method == 'POST':
         if not form.validate():
             return render_template("search_by_facul.html", form=form, action="try", form_name="Визначити психотип студентів факультету")
         else:
-            fac_parameter = form.faculty.data
-            fac_parameter = request.form['faculty']
+            fac_parameter = form.fac.data
             print(fac_parameter)
             result2 = db.sqlalchemy_session.query(genre.psychotype, func.count(genre.psychotype)).join(melody, melody.melody_genre==genre.id).\
                 join(wish, wish.wish_melody==melody.id).join(student, student.id==wish.student_id).filter(student.faculty==fac_parameter).\
@@ -271,56 +292,57 @@ def some_query():
             maxkey = psychotypes_invert[max(psychotypes.values())]
             print(max(psychotypes.values()), 'and its key ', maxkey)
 
-            #result3 = db.sqlalchemy_session.query(result2.c.psychotype)
-            # mass = []
-            # for i in range(len(psychotypes)):
-            #     mass.append(psychotypes[i][0])
-            #print(result2)
+            x = []
+            y = []
+            for a in psychotypes.keys():
+                x.append(a)
+            for b in psychotypes.values():
+                y.append(b)
 
-            # j = join(user_table, address_table,
-            #          user_table.c.id == address_table.c.user_id)
-            # stmt = select([user_table]).select_from(j)
-            # j = join(student, wish, melody, genre, student.id == wish.student_id, wish.wish_melody == melody.id, melody.melody_genre==genre.id)
-            #     # query = select([genre.psychotype]).select_from(select([student.faculty, genre.psychotype]).select_from(j)).where(student.faculty=='FICT')
-            #     # print(query)
-            #     # result = db.sqlalchemy_session.execute(query)
-            #     # for row in result:
-            #     #     print(row)
-            # big_join = db.sqlalchemy_session.query(student, wish, genre, melody).filter(
-            #      student.id == wish.student_id and wish.wish_melody == melody.id and melody.melody_genre==genre.id)
-            # print(big_join)
-            return json.dumps({'faculty':fac_parameter})
+            print(x)
+            print(y)
+            data = [
+                go.Bar(
+                    x=x,  # assign x as the dataframe column 'x'
+                    y=y
+                )
+            ]
 
-    return render_template("search_by_facul.html", form=form, action="try", form_name="searchps")
+            graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
-def create_graph():
-    x=[]
-    y=[]
-    names = list(db.sqlalchemy_session.query(student.faculty))
-    #print(names[0][0])
-    subs = list(db.sqlalchemy_session.query(student.id))
-    #df = pandas.DataFrame({'x': x, 'y': y})  # creating a sample dataframe
-    for i in range(len(names)):
-        x.append(names[i][0])
-    for i in range(len(subs)):
-        y.append(int(subs[i][0]))
-    print(x)
-    print(y)
-    data = [
-        go.Bar(
-            x=x,  # assign x as the dataframe column 'x'
-            y=y
-        )
-    ]
+            bar = graphJSON
+            return render_template('graphics.html', plot=bar)
 
-    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+    return render_template("search_by_facul.html", form=form, action="try", form_name="Визначити психотип студентів факультету")
 
-    return graphJSON
-
-@app.route('/gr', methods=['GET', 'POST'])
-def draw_graph():
-    bar = create_graph()
-    return render_template('graphics.html', plot=bar)
+# def create_graph():
+#     x = []
+#     y = []
+#     names = list(db.sqlalchemy_session.query(student.faculty))
+#     #print(names[0][0])
+#     subs = list(db.sqlalchemy_session.query(student.id))
+#     #df = pandas.DataFrame({'x': x, 'y': y})  # creating a sample dataframe
+#     for i in range(len(names)):
+#         x.append(names[i][0])
+#     for i in range(len(subs)):
+#         y.append(int(subs[i][0]))
+#     print(x)
+#     print(y)
+#     data = [
+#         go.Bar(
+#             x=x,  # assign x as the dataframe column 'x'
+#             y=y
+#         )
+#     ]
+#
+#     graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+#
+#     return graphJSON
+#
+# @app.route('/gr', methods=['GET', 'POST'])
+# def draw_graph():
+#     bar = create_graph()
+#     return render_template('graphics.html', plot=bar)
 
 if __name__ == '__main__':
     app.run()

@@ -23,9 +23,9 @@ print(ch)
 class SearchPsychForm(FlaskForm):
     id = HiddenField()
 
-    faculty = StringField("Введіть факультет для виявлення психотипу студентів: ", [
-        validators.data_required("Це поле є обов'язковим"),
-        validators.any_of(facs)])
+    # faculty = StringField("Введіть факультет для виявлення психотипу студентів: ", [
+    #     validators.data_required("Це поле є обов'язковим"),
+    #     validators.any_of(facs)])
 
     fac = SelectField("Оберіть факультет для виявлення психотипу студентів: ", [
         validators.DataRequired("Це поле є обов'язковим")], choices=ch)
