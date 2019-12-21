@@ -21,7 +21,9 @@ import plotly
 import plotly.graph_objects as go
 
 from forms.AlbumForm import AlbumForm
+from forms.GenreForm import GenreForm
 from forms.MelodyForm import MelodyForm
+from forms.PerformerForm import PerformerForm
 from forms.Search_psychotype import SearchPsychForm
 
 db = PostgresDb()
@@ -40,12 +42,22 @@ def hello_world():
 @app.route('/new_album')
 def new_album():
     form = AlbumForm()
-    return render_template("new_album.html", form = form, action="new_album", form_name = "New album")
+    return render_template("new_album.html", form = form, action="new_album", form_name = "Новий альбом")
 
 @app.route('/new_melody')
 def new_melody():
     form = MelodyForm()
-    return render_template("new_melody.html", form = form, action="new_melody", form_name = "New melody")
+    return render_template("new_melody.html", form = form, action="new_melody", form_name = "Нова мелодія")
+
+@app.route('/new_performer')
+def new_performer():
+    form = PerformerForm()
+    return render_template("new_performer.html", form = form, action= "new_performer", form_name = "Новий виконавець")
+
+@app.route('/new_genre')
+def new_genre():
+    form = GenreForm()
+    return render_template("new_genre.html", form = form, action= "new_genre", form_name = "Новий жанр")
 
 @app.route('/try', methods=['POST', 'GET'])
 def some_query():
@@ -65,7 +77,7 @@ def some_query():
     form = SearchPsychForm()
     if request.method == 'POST':
         if not form.validate():
-            return render_template("search_by_facul.html", form=form, action="try", form_name="searchps")
+            return render_template("search_by_facul.html", form=form, action="try", form_name="Визначити психотип студентів факультету")
         else:
             fac_parameter = form.faculty.data
             fac_parameter = request.form['faculty']
@@ -101,7 +113,7 @@ def some_query():
             # big_join = db.sqlalchemy_session.query(student, wish, genre, melody).filter(
             #      student.id == wish.student_id and wish.wish_melody == melody.id and melody.melody_genre==genre.id)
             # print(big_join)
-            return json.dumps({'user':fac_parameter})
+            return json.dumps({'faculty':fac_parameter})
 
     return render_template("search_by_facul.html", form=form, action="try", form_name="searchps")
 

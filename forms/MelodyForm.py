@@ -9,9 +9,9 @@ db = PostgresDb()
 
 ch1 = []
 ch2 = []
-genres = sorted(list(db.sqlalchemy_session.query(genre.id).distinct()))
+genres = sorted(list(db.sqlalchemy_session.query(genre.id).all()))
 gens = []
-albums = sorted(list(db.sqlalchemy_session.query(album.id).distinct()))
+albums = sorted(list(db.sqlalchemy_session.query(album.id).all()))
 albs = []
 print(albums)
 for i in range(len(genres)):

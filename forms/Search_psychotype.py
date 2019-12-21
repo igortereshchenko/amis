@@ -27,6 +27,7 @@ class SearchPsychForm(FlaskForm):
         validators.data_required("Це поле є обов'язковим"),
         validators.any_of(facs)])
 
-    fac = SelectField("Choose faculty: ", [validators.DataRequired("Choose")], choices=ch)
+    fac = SelectField("Оберіть факультет для виявлення психотипу студентів: ", [
+        validators.DataRequired("Це поле є обов'язковим")], choices=ch)
 
     submit = SubmitField("Шукати")
