@@ -49,12 +49,16 @@ class WishForm(FlaskForm):
     student_id = SelectField("Оберіть ID студента: ", [
         validators.DataRequired("Це поле є обов'язковим")],
         choices=ch)
+
     wish_date = DateField("Дата побажання: ", [validators.data_required("Це поле є обов'язковим.")])
+
     wish_performer = StringField("Оберіть виконавця: ", [validators.any_of(pers)])
+
     wish_melody = SelectField("Код мелодії: ", [
         validators.data_required("Це поле є обов'язковим.")
     ],
                                   choices=ch2)
+
     wish_genre = SelectField("Код жанру: ", [
         validators.data_required("Це поле є обов'язковим.")
     ],

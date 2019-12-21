@@ -25,6 +25,8 @@ from forms.GenreForm import GenreForm
 from forms.MelodyForm import MelodyForm
 from forms.PerformerForm import PerformerForm
 from forms.Search_psychotype import SearchPsychForm
+from forms.StudentForm import StudentForm
+from forms.WishForm import WishForm
 
 db = PostgresDb()
 
@@ -58,6 +60,16 @@ def new_performer():
 def new_genre():
     form = GenreForm()
     return render_template("new_genre.html", form = form, action= "new_genre", form_name = "Новий жанр")
+
+@app.route('/new_student')
+def new_student():
+    form = StudentForm()
+    return render_template("new_student.html", form = form, action= "new_student", form_name = "Новий студент")
+
+@app.route('/new_wish')
+def new_wish():
+    form = WishForm()
+    return render_template("new_wish.html", form = form, action= "new_wish", form_name = "Нове побажання")
 
 @app.route('/try', methods=['POST', 'GET'])
 def some_query():
