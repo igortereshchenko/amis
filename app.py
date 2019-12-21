@@ -161,7 +161,58 @@ def new_student():
             return redirect(url_for('show_tables'))
     return render_template("new_student.html", form = form, action= "new_student", form_name = "Новий студент")
 
-@app.route('/new_wish', methods=['GET', 'POST'])
+@app.route('/edit_student', methods=['GET', 'POST'])
+def edit_student():
+    form = StudentForm()
+    db = PostgresDb()
+    if request.method == 'GET':
+
+        id = request.args.get('id')
+
+        student_obj = db.sqlalchemy_session.query(student).filter(student.id == id).one()
+
+        # fill form and send to user
+        form.id.data = student_obj.id
+        form.faculty.data = student_obj.faculty
+        form.group.data = student_obj.group
+        form.name.data = student_obj.name
+        form.surname.data = student_obj.surname
+        form.username.data = student_obj.username
+
+        return render_template('new_student.html', form=form, form_name="Редагувати інформацію про студента", action="edit_student")
+
+    else:
+        if not form.validate():
+            return render_template('new_student.html', form=form, form_name="Редагувати інформацію про студента", action="edit_student")
+        else:
+            db = PostgresDb()
+            # find professor
+            student_obj = db.sqlalchemy_session.query(student).filter(student.id == form.id.data).one()
+
+            # update fields from form data
+            student_obj.id = form.id.data
+            student_obj.faculty = form.faculty.data
+            student_obj.group = form.group.data
+            student_obj.name = form.name.data
+            student_obj.surname = form.surname.data
+            student_obj.username = form.username.data
+
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('show_tables'))
+
+@app.route('/delete_student')
+def delete_student():
+    student_id = request.args.get('id')
+
+    result = db.sqlalchemy_session.query(student).filter(student.id == student_id).one()
+
+    db.sqlalchemy_session.delete(result)
+    db.sqlalchemy_session.commit()
+
+    return redirect(url_for('show_tables'))
+
+@app.route('/new_wish', methods=['GET', 'POST'] )
 def new_wish():
     form = WishForm()
     if request.method == 'POST':
