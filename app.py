@@ -47,9 +47,9 @@ def show_tables():
     genres = db.sqlalchemy_session.query(genre).all()
     performers = db.sqlalchemy_session.query(performer).all()
     albums = db.sqlalchemy_session.query(album.title, performer.name).join(performer, performer.id==album.performer_id).all()
-    melodies = db.sqlalchemy_session.query(melody.title, melody.singer, melody.release_date, genre.name, album.title).\
+    melodies = db.sqlalchemy_session.query(melody.title, melody.singer, melody.release_date, genre.name, album.title.label("albumtitle")).\
         join(genre, genre.id==melody.melody_genre).join(album, melody.album_id==album.id).all()
-    wishes = db.sqlalchemy_session.query(student.surname, wish.wish_date, performer.name, melody.title, genre.name).\
+    wishes = db.sqlalchemy_session.query(student.surname, wish.wish_date, performer.name, melody.title, genre.name.label("genrename")).\
         join(wish, student.id==wish.student_id).join(melody, wish.wish_melody==melody.id).join(genre, genre.id==melody.melody_genre).\
         join(album, album.id==melody.album_id).join(performer, performer.id==album.performer_id).all()
     return render_template("tables.html", students=students, genres=genres,
@@ -76,29 +76,112 @@ def new_album():
 
     return render_template("new_album.html", form = form, action="new_album", form_name = "Новий альбом")
 
-@app.route('/new_melody')
+@app.route('/new_melody', methods=['GET', 'POST'])
 def new_melody():
     form = MelodyForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('new_melody.html', form=form, form_name="Нова мелодія", action="new_melody")
+        else:
+            melody_id = list(db.sqlalchemy_session.query(func.max(melody.id)))[0][0]
+            melody_obj = melody(
+                id = melody_id+1,
+                title = form.title.data,
+                singer = form.singer.data,
+                release_date =form.release_date.data,
+                melody_genre = form.melody_genre.data,
+                album_id = form.album_id.data
+                )
+
+            db.sqlalchemy_session.add(melody_obj)
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('show_tables'))
     return render_template("new_melody.html", form = form, action="new_melody", form_name = "Нова мелодія")
 
-@app.route('/new_performer')
+@app.route('/new_performer', methods=['GET', 'POST'])
 def new_performer():
     form = PerformerForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('new_performer.html', form=form, form_name="Новий виконавець", action="new_performer")
+        else:
+            performer_id = list(db.sqlalchemy_session.query(func.max(performer.id)))[0][0]
+            performer_obj = performer(
+                id= performer_id + 1,
+                name = form.name.data
+                )
+
+            db.sqlalchemy_session.add(performer_obj)
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('show_tables'))
     return render_template("new_performer.html", form = form, action= "new_performer", form_name = "Новий виконавець")
 
-@app.route('/new_genre')
+@app.route('/new_genre', methods=['GET', 'POST'])
 def new_genre():
     form = GenreForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('new_genre.html', form=form, form_name="Новий виконавець", action="new_genre")
+        else:
+            genre_id = list(db.sqlalchemy_session.query(func.max(genre.id)))[0][0]
+            genre_obj = genre(
+                id= genre_id + 1,
+                name = form.genre_name.data,
+                psychotype=form.psychotype.data
+                )
+
+            db.sqlalchemy_session.add(genre_obj)
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('show_tables'))
     return render_template("new_genre.html", form = form, action= "new_genre", form_name = "Новий жанр")
 
-@app.route('/new_student')
+@app.route('/new_student', methods=['GET', 'POST'])
 def new_student():
     form = StudentForm()
+
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('new_student.html', form=form, form_name="Новий студент", action="new_student")
+        else:
+            student_id = list(db.sqlalchemy_session.query(func.max(student.id)))[0][0]
+            student_obj = student(
+                id=student_id + 1,
+                faculty=form.faculty.data,
+                group=form.group.data,
+                name=form.name.data,
+                surname=form.surname.data,
+                username=form.username.data)
+
+            db.sqlalchemy_session.add(student_obj)
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('show_tables'))
     return render_template("new_student.html", form = form, action= "new_student", form_name = "Новий студент")
 
-@app.route('/new_wish')
+@app.route('/new_wish', methods=['GET', 'POST'])
 def new_wish():
     form = WishForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('new_wish.html', form=form, form_name="Нове побажання", action="new_wish")
+        else:
+            wish_id = list(db.sqlalchemy_session.query(func.max(wish.id)))[0][0]
+            wish_obj = wish(
+                id=wish_id + 1,
+                student_id = form.id.data,
+                wish_date = form.wish_date.data,
+                wish_performer = form.wish_performer.data,
+                wish_melody = form.wish_melody.data,
+                wish_genre = form.wish_genre.data
+            )
+
+            db.sqlalchemy_session.add(wish_obj)
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('show_tables'))
     return render_template("new_wish.html", form = form, action= "new_wish", form_name = "Нове побажання")
 
 @app.route('/try', methods=['POST', 'GET'])

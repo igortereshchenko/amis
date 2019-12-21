@@ -53,16 +53,16 @@ class MelodyForm(FlaskForm):
     singer = SelectField("Виконавець: ", [
         validators.data_required("Це поле є обов'язковим.")
     ],
-                                  choices=ch3)
+                                  choices=ch3, coerce=str)
     release_date = DateField("Дата релізу: ", [validators.data_required("Це поле є обов'язковим.")])
 
     melody_genre = SelectField("Код жанру: ", [
         validators.data_required("Це поле є обов'язковим.")
     ],
-                                  choices=ch1)
+                                  choices=ch1, coerce=int)
     album_id = SelectField("Код альбому: ", [
         validators.data_required("Це поле є обов'язковим.")
     ],
-                                  choices=ch2)
+                                  choices=ch2, coerce=int)
 
     submit = SubmitField("Зберегти")
