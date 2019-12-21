@@ -52,7 +52,6 @@ class wish(Base):
     id = Column(Integer, primary_key=True)
     student_id = Column(Integer, ForeignKey('student.id'))
     wish_date = Column(Date)
-    nickname = Column(String(36))
     wish_performer = Column(String(15))
     wish_melody = Column(Integer, ForeignKey('melody.id'))
     wish_genre = Column(Integer)
