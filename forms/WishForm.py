@@ -34,7 +34,7 @@ for i in range(len(genres)):
     tuple1 = genres[i][0], genres[i][0]
     ch1.append(tuple1)
 print(ch1)
-ch2 = [(0, 0)]
+ch2 = []
 melodies = sorted(list(db.sqlalchemy_session.query(melody.id).all()))
 mels = []
 for i in range(len(melodies)):
@@ -50,7 +50,7 @@ class WishForm(FlaskForm):
         validators.DataRequired("Це поле є обов'язковим")],
         choices=ch, coerce=int)
 
-    wish_date = DateField("Дата побажання: ", [validators.data_required("Це поле є обов'язковим.")])
+    wish_date = DateField("Дата побажання: ", [validators.data_required("Це поле є обов'язковим.")], format='%Y-%m-%d')
 
     wish_performer = StringField("Оберіть виконавця: ", [validators.any_of(pers, "Перевірте, чи такий виконавець існує")])
 

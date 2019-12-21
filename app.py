@@ -50,8 +50,10 @@ def show_tables():
     melodies = db.sqlalchemy_session.query(melody.title, melody.singer, melody.release_date, genre.name, album.title.label("albumtitle")).\
         join(genre, genre.id==melody.melody_genre).join(album, melody.album_id==album.id).all()
     wishes = db.sqlalchemy_session.query(student.surname, wish.wish_date, performer.name, melody.title, genre.name.label("genrename")).\
-        join(wish, student.id==wish.student_id).join(melody, wish.wish_melody==melody.id).join(genre, genre.id==melody.melody_genre).\
-        join(album, album.id==melody.album_id).join(performer, performer.id==album.performer_id).all()
+       join(wish, student.id==wish.student_id).join(melody, wish.wish_melody==melody.id).join(genre, genre.id==melody.melody_genre).\
+       join(album, album.id==melody.album_id).join(performer, performer.id==album.performer_id).all()
+    #wishes = db.sqlalchemy_session.query(wish).all()
+
     return render_template("tables.html", students=students, genres=genres,
                            performers=performers, albums=albums, melodies=melodies, wishes=wishes)
 
@@ -257,7 +259,7 @@ def new_wish():
             wish_id = list(db.sqlalchemy_session.query(func.max(wish.id)))[0][0]
             wish_obj = wish(
                 id=wish_id + 1,
-                student_id = form.id.data,
+                student_id = form.student_id.data,
                 wish_date = form.wish_date.data,
                 wish_performer = form.wish_performer.data,
                 wish_melody = form.wish_melody.data,
