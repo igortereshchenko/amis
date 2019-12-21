@@ -32,6 +32,6 @@ class AlbumForm(FlaskForm):
     album_performer = SelectField("Код виконавця: ", [
         validators.data_required("Це поле є обов'язковим.")
     ],
-                                  choices=ch)
+                                  choices=ch, coerce=int)
 
     submit = SubmitField("Зберегти")

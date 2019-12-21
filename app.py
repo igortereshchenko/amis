@@ -55,9 +55,25 @@ def show_tables():
     return render_template("tables.html", students=students, genres=genres,
                            performers=performers, albums=albums, melodies=melodies, wishes=wishes)
 
-@app.route('/new_album')
+@app.route('/new_album', methods=['GET', 'POST'])
 def new_album():
     form = AlbumForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('new_album.html', form=form, form_name="Новий альбом", action="new_album")
+        else:
+            album_id = list(db.sqlalchemy_session.query(func.max(album.id)))[0][0]
+            album_obj = album(
+                id= album_id + 1,
+                title=form.album_name.data,
+                performer_id=form.album_performer.data
+                )
+
+            db.sqlalchemy_session.add(album_obj)
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('show_tables'))
+
     return render_template("new_album.html", form = form, action="new_album", form_name = "Новий альбом")
 
 @app.route('/new_melody')
@@ -144,37 +160,26 @@ def some_query():
     return render_template("search_by_facul.html", form=form, action="try", form_name="searchps")
 
 def create_graph():
-    # x=[]
-    # y=[]
-    # names = list(db.sqlalchemy_session.query(ormGanre.name))
-    # #print(names[0][0])
-    # subs = list(db.sqlalchemy_session.query(ormGanre.count_of_subscribers))
-    # #df = pandas.DataFrame({'x': x, 'y': y})  # creating a sample dataframe
-    # for i in range(len(names)):
-    #     x.append(names[i][0])
-    # for i in range(len(subs)):
-    #     y.append(int(subs[i][0]))
-    # print(x)
-    # print(y)
-    # data = [
-    #     go.Bar(
-    #         x=x,  # assign x as the dataframe column 'x'
-    #         y=y
-    #     )
-    # ]
+    x=[]
+    y=[]
+    names = list(db.sqlalchemy_session.query(student.faculty))
+    #print(names[0][0])
+    subs = list(db.sqlalchemy_session.query(student.id))
+    #df = pandas.DataFrame({'x': x, 'y': y})  # creating a sample dataframe
+    for i in range(len(names)):
+        x.append(names[i][0])
+    for i in range(len(subs)):
+        y.append(int(subs[i][0]))
+    print(x)
+    print(y)
+    data = [
+        go.Bar(
+            x=x,  # assign x as the dataframe column 'x'
+            y=y
+        )
+    ]
 
-    # labels = ['Oxygen', 'Hydrogen', 'Carbon_Dioxide', 'Nitrogen']
-    # values = [4500, 2500, 1053, 500]
-    #
-    # fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
-
-    N = 1000
-    t = numpy.linspace(0, 10, 100)
-    y = numpy.sin(t)
-
-    fig = go.Figure(data=go.Scatter(x=t, y=y, mode='markers'))
-
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
     return graphJSON
 
