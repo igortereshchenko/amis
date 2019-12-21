@@ -38,6 +38,9 @@
 <div class="table-responsive">
     <table class="table">
         <thead>
+                    <tr>
+                <th scope="col">Жанр</th>
+            </tr>
         <tr>
             <th>Назва жанру</th>
             <th>Психотип</th>
@@ -63,6 +66,9 @@
 <div class="table-responsive">
     <table class="table">
         <thead>
+                    <tr>
+                <th scope="col">Виконавець</th>
+            </tr>
         <tr>
             <th>Код виконавця</th>
             <th>Ім'я</th>
@@ -78,6 +84,64 @@
             <tr>
                 <td>
                     <a href="/new_performer"><button type="button" class="btn btn-success" name="btn_new_performer">Додати виконавця</button> </a></td>
+            </tr>
+        </tbody>
+    </table>
+ </div>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+
+            <tr>
+                <th scope="col">Альбом</th>
+            </tr>
+            <tr>
+            <th>Назва</th>
+            <th>Виконавець</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for album in albums %}
+            <tr >
+                <td> {{album.title}} </td>
+                <td> {{album.name}} </td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td>
+                    <a href="/new_album"><button type="button" class="btn btn-success" name="btn_new_album">Додати альбом</button> </a></td>
+            </tr>
+        </tbody>
+    </table>
+ </div>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+
+            <tr>
+                <th scope="col">Мелодія</th>
+            </tr>
+            <tr>
+            <th>Назва</th>
+            <th>Виконавець</th>
+                <th>Реліз</th>
+                <th>Жанр</th>
+                <th>Альбом</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for melody in melodies %}
+            <tr >
+                <td> {{melody.title}} </td>
+                <td> {{melody.singer}} </td>
+            <td> {{melody.release_date}} </td>
+            <td> {{melody.name}} </td>
+            <td> {{melody.title}} </td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td>
+                    <a href="/new_melody"><button type="button" class="btn btn-success" name="btn_new_melody">Додати мелодію</button> </a></td>
             </tr>
         </tbody>
     </table>
