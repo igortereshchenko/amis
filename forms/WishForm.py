@@ -19,13 +19,13 @@ for i in range(len(students)):
     ch.append(tuple)
 print(ch)
 
-ch3 = []
+ch3 = [(None, None)]
 performers = sorted(list(db.sqlalchemy_session.query(performer.name).distinct()))
-pers = ['']
+pers = []
 for i in range(len(performers)):
     pers.append(performers[i][0])
 
-ch1 = ['']
+ch1 = [(None, None)]
 genres = sorted(list(db.sqlalchemy_session.query(genre.id).all()))
 gens = []
 for i in range(len(genres)):
@@ -33,8 +33,8 @@ for i in range(len(genres)):
 for i in range(len(genres)):
     tuple1 = genres[i][0], genres[i][0]
     ch1.append(tuple1)
-
-ch2 = ['']
+print(ch1)
+ch2 = [(None, None)]
 melodies = sorted(list(db.sqlalchemy_session.query(melody.id).all()))
 mels = []
 for i in range(len(melodies)):
@@ -42,7 +42,7 @@ for i in range(len(melodies)):
 for i in range(len(melodies)):
     tuple2 = melodies[i][0], melodies[i][0]
     ch2.append(tuple2)
-
+print(ch2)
 class WishForm(FlaskForm):
     id = HiddenField()
 
