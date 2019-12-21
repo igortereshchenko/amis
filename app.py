@@ -49,7 +49,9 @@ def show_tables():
     albums = db.sqlalchemy_session.query(album.title, performer.name).join(performer, performer.id==album.performer_id).all()
     melodies = db.sqlalchemy_session.query(melody.title, melody.singer, melody.release_date, genre.name, album.title).\
         join(genre, genre.id==melody.melody_genre).join(album, melody.album_id==album.id).all()
-    wishes = db.sqlalchemy_session.query(wish).all()
+    wishes = db.sqlalchemy_session.query(student.surname, wish.wish_date, performer.name, melody.title, genre.name).\
+        join(wish, student.id==wish.student_id).join(melody, wish.wish_melody==melody.id).join(genre, genre.id==melody.melody_genre).\
+        join(album, album.id==melody.album_id).join(performer, performer.id==album.performer_id).all()
     return render_template("tables.html", students=students, genres=genres,
                            performers=performers, albums=albums, melodies=melodies, wishes=wishes)
 
