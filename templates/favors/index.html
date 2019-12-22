@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div id="content__page__header" class="d-flex justify-content-between align-items-center">
+        <span>Favors</span>
+        <a href="{{url_for('new_favor')}}" class="btn btn-primary">Add new favor</a>
+    </div>
+    <div id="content__page__body">
+        <table class="table">
+            <thead>
+            <tr>
+                <th style="width: 12%">Clothe</th>
+                <th style="width: 13%">Vendor</th>
+                <th style="width: 20%">Created On</th>
+                <th style="width: 15%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for favor in favors: %}
+                <tr>
+                    <td>{{ favor.Clothe.Outwear }}</td>
+                    <td>{{ favor.Vendor.vendor_name }}</td>
+                    <td>{{ favor.CreatedOn.strftime("%b %d %Y %H:%M:%S")  }}</td>
+                    <td class="d-flex justify-content-end">
+                        <a href="{{url_for('update_favor', uuid=favor.favors_id)}}" class="btn btn-success">Edit</a>
+                        <form method="post" action="{{url_for('delete_favor', uuid=favor.favors_id)}}" class="delete-record">
+                            <input type="submit" value="Delete" class="btn btn-danger"/>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
