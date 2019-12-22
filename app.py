@@ -1,25 +1,11 @@
 import json
-
-import numpy
-import pandas
 from flask import Flask, render_template, request, redirect, url_for
-from sqlalchemy.ext.declarative import declarative_base
-
-from dao.db import PostgresDb
-from dao import credentials
-from dao.db import *
-
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, func, select, join
-from sqlalchemy.orm import relationship
-
+from sqlalchemy import func
 from dao.orm.model import *
 from dao.db import PostgresDb
 from dao.credentials import *
-
 import plotly
 import plotly.graph_objects as go
-
 from forms.AlbumForm import AlbumForm
 from forms.GenreForm import GenreForm
 from forms.MelodyForm import MelodyForm
