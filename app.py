@@ -34,7 +34,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "jkm-vsnej9l-vm9sqm3:lmve")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL",
-                                                  f"postgresql://{username}:{password}@{host}:{port}/{database}")
+                                                  'postgres://xujoczxbviwzjo:83a4ab01c63234f37abb82fabf8294c7f26494fdd92b567ead595ea821a3abba@ec2-174-129-24-148.compute-1.amazonaws.com:5432/dbriles54vm09o')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 @app.route('/')
