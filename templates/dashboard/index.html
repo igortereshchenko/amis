@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+
+        <div class="d-flex justify-content-between align-items-center dashboard_filter">
+            <span>Products shops population</span>
+            <select class="form-control" id="product_shops_population_select">
+                {% for product in model.products %}
+                    <option value="{{product[0]}}">{{product[0]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="chart" id="product_shops_population_graph">
+            <script>
+                var product_shops_population_data = {{} model.products_shops_population_data  | safe };
+                Plotly.plot('product_shops_population_graph', product_shops_population_data, {});
+            </script>
+        </div>
+    </div>
+</div>
+{% endblock %}
