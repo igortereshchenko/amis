@@ -1,0 +1,48 @@
+{% extends "admin.html" %}
+
+{% block title %}CHE CRUD{% endblock %}
+
+{% block content %}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Complex</th>
+            <th scope="col">Exercise</th>
+            <th scope="col">Repeat</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in complexAll%}
+        <tr>
+            <td> {{user.complex_name}}</td>
+            <td> {{user.exercise_name}}</td>
+            <td> {{user.repeater}}</td>
+            <td>
+                <a href="/che_update?cn={{user.complex_name}}&en={{user.exercise_name}}"
+                   title="edit button">
+                    <button type="button" class="btn btn-warning" name="btn_edit_che"
+                            data-che="{{user.complex_name}}">Edit
+                    </button>
+                </a>
+                <a href="/delete_che?cn={{user.complex_name}}&en={{user.exercise_name}}"
+                   title="delete button">
+                    <button type="button" class="btn btn-danger" name="btn_delete_che"
+                            data-che="{{user.complex_name}}">Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <a href="/che_create" title="new che button">
+                    <button type="button" class="btn btn-success" name="btn_new_che">New CHE</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

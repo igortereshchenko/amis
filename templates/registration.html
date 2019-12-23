@@ -1,0 +1,101 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Registration{% endblock %}
+
+{% block content %}
+<h1><font color="red">{{message}}</font></h1>
+<div class="col-md-6 mx-auto">
+    <div class="card rounded-0">
+
+        <div class="card-header">
+            <h3 class="mb-0">Registration</h3>
+        </div>
+        <div class="card-body">
+            <form class="form"  method = post >
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{form.name.label}}
+                    {{ form.name(class_="form-control") }}
+
+                    {% if form.name.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.name.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{form.age.label}}
+                    {{ form.age(class_="form-control") }}
+
+                    {% if form.age.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.age.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{form.weight.label}}
+                    {{ form.weight(class_="form-control") }}
+
+                    {% if form.weight.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.weight.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{form.hight.label}}
+                    {{ form.hight(class_="form-control") }}
+
+                    {% if form.hight.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.hight.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{form.password.label}}
+                    {{ form.password(class_="form-control") }}
+
+                    {% if form.password.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.password.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{form.confirm.label}}
+                    {{ form.confirm(class_="form-control") }}
+
+                    {% if form.confirm.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.confirm.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                {{ form.submit(class_="btn btn-success") }}
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
+{% endblock %}
