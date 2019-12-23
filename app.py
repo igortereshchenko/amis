@@ -7,9 +7,12 @@ from views.options import OptionsViewModel
 from views.clothes import ClothesViewModel
 from views.vendors import VendorsViewModel
 from views.favors import FavorsViewModel
+from views.auth import LoginViewModel
 from services.visualization import visualization_data
 from sqlalchemy import desc
 import os
+from nn import *
+from flask_login import login_user, login_required, current_user, logout_user, LoginManager
 
 app = Flask(__name__)
 app.secret_key = 'development key'
@@ -22,11 +25,12 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 
+
+
 @app.route("/")
 def root():
     db.create_all()
     return render_template("layout.html")
-
 
 @app.route('/map')
 def map():
@@ -48,6 +52,32 @@ def get():
     clothes=Clothes.query.all()
     vendors=Vendors.query.all()
     return render_template("layout.html",users=users,events=events,options=options,clothes=clothes,vendors=vendors)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginViewModel()
+    if request.method == 'POST':
+        if not form.validate():
+            render_template("authentication/index.html", form=form)
+        else:
+            Login = form.Login.data
+            Password = form.Password.data
+            log = db.session.query(Users).filter(Users.Login == Login).filter(Users.Password == Password).all()
+            if log:
+
+                if Login == 'Kolobayeva':
+                    return redirect(url_for('users'))
+            return redirect(url_for('new_user', user=Login))
+        return render_template("authentication/index.html", form=form, message='not found')
+
+    return render_template("authentication/index.html", form=form)
+
+
+
+
+
+
 
 @app.route("/users")
 def users():
@@ -358,6 +388,6 @@ def visualization():
     return render_template("dashboard/index.html", clothe_vendors_bar=data)
 
 
+
 if __name__ == "__main__":
     app.run(debug=True)
-
