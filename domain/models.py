@@ -148,7 +148,7 @@ class Vendors(db.Model):
 class Inits(db.Model):
     __tablename__ = "inits"
 
-    inits_id = db.Column("init_id", db.Integer, primary_key=True)
+    inits_id = db.Column("inits_id", db.Integer, primary_key=True)
     CreatedOn = db.Column("created", db.TIMESTAMP, default=datetime.now)
 
     product_idIdFk = db.Column("product_ididfk", db.Integer, db.ForeignKey("products.product_id"))

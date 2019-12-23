@@ -1,20 +1,18 @@
-from domain.models import db, Products, Vendors
+from domain.models import db, Products, Tests
 import plotly
 import plotly.graph_objs as go
 import json
 
-
-
-
-def product_vendors_population_bar(name):
-    data = db.session.query(Vendors.Vendor_name, db.func.countVendors.vendor_id). join(
-        Products, Products.product_id == Vendors.product_idFk)
-            filter(Products.Product_name == name).group_by(Vendors.Vendor_name).all()
-    bar_plot = [
+def visualization_data():
+    data = db.session.query(Products.Product_price,
+                            db.func.count(Tests.test_id).label("TestsPopulary")
+                            ).join(Tests, Products.test_idIdFk == Tests.test_id).group_by(Products.Product_price).all()
+    close_idd=[100,200,300,400,500]
+    bar = [
         go.Bar(
-                x=[value[0] for value in data],
-                y=[value[1] for value in data]
+            x=[value[0] for value in data],
+            y=close_idd
         )
     ]
 
-    return json.dumps(bar_plot, cls=plotly.utils.PlotlyJSONEncoder)
+    return json.dumps(bar, cls=plotly.utils.PlotlyJSONEncoder)

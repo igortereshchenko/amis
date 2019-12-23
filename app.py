@@ -7,7 +7,7 @@ from views.products import ProductsViewModel
 from views.shops import ShopsViewModel
 from views.vendors import VendorsViewModel
 from views.inits import InitsViewModel
-
+from services.visualization import visualization_data
 
 
 from sqlalchemy import desc
@@ -377,9 +377,17 @@ def update_init(uuid):
 
     return render_template("inits/update.html", form=form)
 
-
-
+@app.route("/bar", methods=["GET"])
+def visualization():
+    data = visualization_data()
+    return render_template("correlation analysis/index.html", test_products_bar=data)
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
+
+

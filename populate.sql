@@ -50,14 +50,7 @@ VALUES ( 3,'Kate', 'Odessa', 8, 2001, NOW(), 3);
 
 
 
-INSERT INTO inits (init_id, Created, product_idIDFK, client_idIDFK)
-VALUES (1, NOW(), 1, 1);
 
-INSERT INTO inits (init_id, Created, product_idIDFK, client_idIDFK)
-VALUES (2, NOW(), 2, 2);
-
-INSERT INTO inits (init_id, Created, product_idIDFK, client_idIDFK)
-VALUES ( 3, NOW(), 3, 3);
 
 
 
@@ -81,4 +74,4 @@ select * from Tests;
 select * from Products;
 select * from Shops;
 select * from Vendors;
-select * from Inits;
+

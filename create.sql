@@ -41,13 +41,7 @@ CREATE TABLE Vendors(
 	product_idIDFK int,
 	FOREIGN KEY (product_idIDFK) REFERENCES products(product_id)
 );
-CREATE TABLE Inits(
-    init_id int NOT NULL PRIMARY KEY,
-    Created timestamp,
-	product_idIDFK int,
-	client_idIDFK int,
-	FOREIGN KEY (product_idIDFK, client_idIDFK ) REFERENCES products(product_id), clients(client_id)
-);
+
 
 
 
