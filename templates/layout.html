@@ -21,14 +21,22 @@
 				<a href="{{ url_for('clothes')}}">Clothes</a>
                 <a href="{{ url_for('vendors')}}">Vendors</a>
                 <a href="{{ url_for('favors')}}">Favors</a>
-                <a href="{{ url_for('visualization')}}">Dashboard</a>
+                <a href="{{ url_for('visualization')}}">Analysis</a>
+                <form method="post" action="{{ url_for('login')}}" id="Login">
+            <button type="submit" class="card-action">
+                <span>Log in</span>
+                <i class="ft-log-out"></i>
+            </button>
+                </form>
+
             </div>
         </div>
     </div>
+
+    {% block content %}
     <div id="content">
-        <div class="container d-flex flex-column" id="content__page">
-            {% block content %}{% endblock %}
-        </div>
+        <div class="container d-flex flex-column" id="content__page"></div>
     </div>
+    {% endblock %}
 </body>
 </html>
