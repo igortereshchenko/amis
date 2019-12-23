@@ -33,51 +33,43 @@
                     </div>
                     {%endif%}
                 </div>
-
                 <div class="form-group">
-                    {{ form.type.label }}
-                    {{ form.type(class_="form-control") }}
+                    {{ form.discipline_name.label }}
+                    {{ form.discipline_name(class_="form-control") }}
 
-                    {% if form.type.errors%}
+                    {% if form.discipline_name.errors%}
                     <div class="alert alert-danger" role="alert">
-                        {% for message in form.type.errors %}
+                        {% for message in form.discipline_name.errors %}
                         <div>{{ message }}</div>
                         {% endfor %}
                     </div>
                     {%endif%}
                 </div>
-
                 <div class="form-group">
-                    {{ form.vacancy.label }}
-                    {{ form.vacancy(class_="form-control") }}
+                    {{ form.value.label }}
+                    {{ form.value(class_="form-control") }}
 
-                    {% if form.vacancy.errors%}
+                    {% if form.value.errors%}
                     <div class="alert alert-danger" role="alert">
-                        {% for message in form.vacancy.errors %}
+                        {% for message in form.value.errors %}
                         <div>{{ message }}</div>
                         {% endfor %}
                     </div>
                     {%endif%}
                 </div>
-
                 <div class="form-group">
-                    {{ form.creation_date.label }}
-                    {{ form.creation_date(class_="form-control") }}
+                    {{ form.deadline.label }}
+                    {{ form.deadline(class_="form-control") }}
 
-                    {% if form.creation_date.errors%}
+                    {% if form.deadline.errors%}
                     <div class="alert alert-danger" role="alert">
-                        {% for message in form.creation_date.errors %}
+                        {% for message in form.deadline.errors %}
                         <div>{{ message }}</div>
                         {% endfor %}
                     </div>
                     {%endif%}
                 </div>
-
-
-
-
-
-                {{ form.submit(class_="btn btn-success") }}
+            {{ form.submit(class_="btn btn-success") }}
             </form>
         </div>
         <!--/card-block-->

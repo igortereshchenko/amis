@@ -31,11 +31,11 @@ class Discipline(Base):
 class Task(Base):
     __tablename__ = 'Task'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer)
+    name = Column(String(255), nullable=False , primary_key=True)
     discipline_name = Column(String(255), ForeignKey('Discipline.name'))
     value = Column(Integer, nullable=False)
     deadline = Column(Date, nullable=False)
-    name = Column(String(255), nullable=False)
 
     discipline_entity = relationship("Discipline")
 
@@ -67,20 +67,14 @@ class Student_Task(Base):
                                             Student.sgroup]),
                       {})
 
-
-class Skill(Base):
-    __tablename__ = 'Skill'
-
-    student_name = Column(String, primary_key=True)
-    student_group = Column(Integer, primary_key=True)
-    name = Column(String, primary_key=True)
-    type = Column(String, nullable=False)
-    vacancy = Column(String, nullable=False)
-    creation_date = Column(Date,nullable=False)
+class Users(Base):
+    __tablename__= 'Users'
+    name = Column(String(255),primary_key=True)
+    password = Column(String(255),primary_key=True)
+    sgroup = Column(Integer)
 
     student_entity = relationship("Student")
-
-    __table_args__ = (ForeignKeyConstraint([student_name, student_group],
+    __table_args__ = (ForeignKeyConstraint([name, password],
                                            [Student.name,
                                             Student.sgroup]),
                       {})
@@ -97,5 +91,5 @@ if __name__ == '__main__':
     q3 = db.sqlalchemy_session.query(Task).all()
     q4 = db.sqlalchemy_session.query(Student_Task).join(Student).join(Task).all()
     q5 = db.sqlalchemy_session.query(Student_Discipline).join(Student).join(Discipline).all()
-
+    q5 = db.sqlalchemy_session.query(Users).all()
     print()

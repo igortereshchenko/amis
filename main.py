@@ -1,360 +1,581 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 from dao.db import PostgresDb
-
 from dao.orm.entities import *
 from forms.discipline_form import DisciplineForm
 from forms.student_form import StudentForm
 from forms.teacher_form import TeacherForm
-from forms.skill_form import SkillForm
+from forms.user_form import UserForm
+from forms.task_form import TaskFrom
+from forms.student_task_form import Student_TaskForm
+
+import cluster
+
+import json
+import plotly
+import plotly.graph_objs as go
 
 app = Flask(__name__)
 app.secret_key = 'development key'
 
 
+class Login:
+    name = ""
+    password = ""
+    isLogged = False
+    isAdmin = False
+
+    def Login(self, name, password, isAdmin=False):
+        self.name = name
+        self.password = password
+        self.isLogged = True
+        self.isAdmin = isAdmin
+
+
+login = Login()
+
+
 @app.route('/', methods=['GET', 'POST'])
 def root():
-    return render_template('index.html')
-
-
-@app.route('/ai', methods=['GET'])
-def ai():
-    skill_obj = Skill(
-        student_name='Mozgovoy Nikita',
-        student_group=61,
-        name='OOP basic',
-        type='OOP',
-        vacancy='C++ developer',
-        creation_date='2019-06-22 19:10:25-07'
-    )
-    db = PostgresDb()
-    db.sqlalchemy_session.add(skill_obj)
-    db.sqlalchemy_session.commit()
-    return render_template('index.html')
-
-
-@app.route('/show', methods=['GET'])
-def show():
-    db = PostgresDb()
-
-    skill = db.sqlalchemy_session.query(Skill).all()
-
-    return render_template('skill.html', skills=skill)
-
-
-@app.route('/update', methods=['GET', 'POST'])
-def update():
-    form = SkillForm()
-
-    if request.method == 'GET':
-
-        student_name = request.args.get('student_name')
-        student_group = request.args.get('student_group')
-        name = request.args.get('name')
-        db = PostgresDb()
-        skill_obj = db.sqlalchemy_session.query(Skill).filter(Skill.student_name == student_name,
-                                                              Skill.student_group == student_group,
-                                                              Skill.name == name
-                                                              ).one()
-
-        # fill form and send to user
-        form.student_name.data=skill_obj.student_name
-        form.student_group.data=skill_obj.student_group
-        form.vacancy.data = skill_obj.vacancy
-        form.type.data=skill_obj.type
-        form.creation_date.data = skill_obj.creation_date
-        form.name.data = skill_obj.name
-
-        form.old_name.data = skill_obj.name
-        return render_template('skill_form.html', form=form, form_name="Edit skill", action="update")
-
-    else:
-        if not form.validate():
-            return render_template('skill_form.html', form=form, form_name="Edit skill",
-                                   action="update")
+    if login.isLogged:
+        if login.isAdmin:
+            return render_template('index.html')
         else:
+            db = PostgresDb()
+
+            user = db.sqlalchemy_session.query(Users).filter(Users.name == login.name,
+                                                             Users.password == login.password).all()
+            tasks = db.sqlalchemy_session.query(Student_Task).filter(Student_Task.student_name == user[0].name,
+                                                                     Student_Task.student_group == user[0].sgroup).all()
+            return render_template('Student_index.html', tasks = tasks)
+    else:
+        form = UserForm()
+        if request.method == 'GET':
+            return render_template('login_form.html', form=form, form_name="Login", action="")
+        else:
+            if not form.validate():
+                return render_template('login_form.html', form=form, form_name="Login", action="")
             db = PostgresDb()
             # find professor
 
-            skill_obj = db.sqlalchemy_session.query(Skill).filter(Skill.student_name == form.student_name.data,
-                                                                  Skill.student_group == form.student_group.data,
-                                                                  Skill.name == form.old_name.data
-                                                                  ).one()
+            user = db.sqlalchemy_session.query(Users).filter(Users.name == form.name.data,
+                                                             Users.password == form.password.data).all()
+            if user:
+                login.Login(name=user[0].name, password=user[0].password)
+                tasks = db.sqlalchemy_session.query(Student_Task).filter(Student_Task.student_name == user[0].name,
+                                                    Student_Task.student_group == user[0].sgroup).all()
+                return render_template('Student_index.html', tasks =tasks)
+            elif form.name.data == 'admin' and form.password.data == 'admin':
+                login.Login(name='admin', password='admin', isAdmin=True)
+                return render_template('index.html')
+            else:
+                return render_template('login_form.html', form=form, form_name="Login", action="")
 
-            # update fields from form data
-            skill_obj.type = form.type.data
-            skill_obj.vacancy = form.vacancy.data
-            skill_obj.creation_date = form.creation_date.data
-            skill_obj.name = form.name.data
+@app.route('/analysis', methods=['GET', 'POST'])
+def analysis():
 
-            db.sqlalchemy_session.commit()
+    data = {}
 
-            return redirect(url_for('show'))
+    cluster_data = cluster.get_cluster_val(student_name=login.name)
+
+    scatter_1 = go.Scatter(
+        x=[i[0] for i in cluster_data[2]], y=[i[1] for i in cluster_data[2]],
+        name='Hard',
+        mode='markers',
+        marker_color='rgba(152, 0, 0, .8)'
+    )
+    scatter_2 = go.Scatter(
+        x=[i[0] for i in cluster_data[3]], y=[i[1] for i in cluster_data[3]],
+        name='Light',
+        mode='markers',
+        marker_color='rgba(0,0,0,1)'
+    )
+    scatter_3 = go.Scatter(
+        x=cluster_data[0], y=cluster_data[1],
+        name='centers',
+        mode='markers',
+        marker={"symbol": "star-triangle-down-open"},
+        marker_color='rgba(21,140,0,1)'
+    )
+
+    data["scatter_all_cluster"] = [scatter_1, scatter_2, scatter_3]
+    json_data = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+
+
+    return render_template('analysis.html',  json=json_data,predicted_cluster=cluster_data[-1])
 
 
 @app.route('/teacher', methods=['GET'])
 def index_teacher():
-    db = PostgresDb()
+    if login.isLogged:
+        if login.isAdmin:
+            db = PostgresDb()
 
-    result = db.sqlalchemy_session.query(Teacher).all()
+            result = db.sqlalchemy_session.query(Teacher).all()
 
-    return render_template('teacher.html', teachers=result)
+            return render_template('teacher.html', teachers=result)
 
 
 @app.route('/new_teacher', methods=['GET', 'POST'])
 def new_teacher():
-    form = TeacherForm()
+    if login.isLogged:
+        if login.isAdmin:
+            form = TeacherForm()
 
-    if request.method == 'POST':
-        if not form.validate():
+            if request.method == 'POST':
+                if not form.validate():
+                    return render_template('teacher_form.html', form=form, form_name="New teacher", action="new_teacher")
+                else:
+                    teacher_obj = Teacher(
+                        name=form.name.data,
+                        degree=form.degree.data
+                    )
+                    db = PostgresDb()
+                    db.sqlalchemy_session.add(teacher_obj)
+                    db.sqlalchemy_session.commit()
+
+                    return redirect(url_for('index_teacher'))
+
             return render_template('teacher_form.html', form=form, form_name="New teacher", action="new_teacher")
-        else:
-            teacher_obj = Teacher(
-                name=form.name.data,
-                degree=form.degree.data
-            )
-            db = PostgresDb()
-            db.sqlalchemy_session.add(teacher_obj)
-            db.sqlalchemy_session.commit()
-
-            return redirect(url_for('index_teacher'))
-
-    return render_template('teacher_form.html', form=form, form_name="New teacher", action="new_teacher")
 
 
 @app.route('/edit_teacher', methods=['GET', 'POST'])
 def edit_teacher():
-    form = TeacherForm()
+    if login.isLogged:
+        if login.isAdmin:
+            form = TeacherForm()
 
-    if request.method == 'GET':
+            if request.method == 'GET':
 
-        name = request.args.get('name')
-        db = PostgresDb()
-        teacher_obj = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == name).one()
+                name = request.args.get('name')
+                db = PostgresDb()
+                teacher_obj = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == name).one()
 
-        # fill form and send to user
-        form.name.data = teacher_obj.name
-        form.degree.data = teacher_obj.degree
-        form.old_name.data = teacher_obj.name
-        return render_template('teacher_form.html', form=form, form_name="Edit teacher", action="edit_teacher")
+                # fill form and send to user
+                form.name.data = teacher_obj.name
+                form.degree.data = teacher_obj.degree
+                form.old_name.data = teacher_obj.name
+                return render_template('teacher_form.html', form=form, form_name="Edit teacher", action="edit_teacher")
 
-    else:
-        if not form.validate():
-            return render_template('teacher_form.html', form=form, form_name="Edit teacher",
-                                   action="edit_teacher")
-        else:
+            else:
+                if not form.validate():
+                    return render_template('teacher_form.html', form=form, form_name="Edit teacher",
+                                           action="edit_teacher")
+                else:
+                    db = PostgresDb()
+                    # find professor
+
+                    teacher_obj = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == form.old_name.data).one()
+
+                    # update fields from form data
+                    teacher_obj.name = form.name.data
+                    teacher_obj.degree = form.degree.data
+
+                    db.sqlalchemy_session.commit()
+
+                    return redirect(url_for('index_teacher'))
+
+@app.route('/delete_teacher')
+def delete_teacher():
+    if login.isLogged:
+        if login.isAdmin:
+            name = request.args.get('name')
+
             db = PostgresDb()
-            # find professor
 
-            teacher_obj = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == form.old_name.data).one()
+            result = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == name).one()
 
-            # update fields from form data
-            teacher_obj.name = form.name.data
-            teacher_obj.degree = form.degree.data
-
+            db.sqlalchemy_session.delete(result)
             db.sqlalchemy_session.commit()
 
             return redirect(url_for('index_teacher'))
 
+@app.route('/task', methods=['GET'])
+def index_task():
+    if login.isLogged:
+        if login.isAdmin:
+            db = PostgresDb()
 
-@app.route('/delete_teacher')
-def delete_teacher():
-    name = request.args.get('name')
+            result = db.sqlalchemy_session.query(Task).all()
 
-    db = PostgresDb()
-
-    result = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == name).one()
-
-    db.sqlalchemy_session.delete(result)
-    db.sqlalchemy_session.commit()
-
-    return redirect(url_for('index_teacher'))
+            return render_template('task.html', tasks=result)
 
 
-# END PROFESSOR ORIENTED QUERIES --------------------------------------------------------------------------------------
+@app.route('/new_task', methods=['GET', 'POST'])
+def new_task():
+    if login.isLogged:
+        if login.isAdmin:
+            form = TaskFrom()
 
-# STUDENT ORIENTED QUERIES --------------------------------------------------------------------------------------------
+            if request.method == 'POST':
+                if not form.validate():
+                    return render_template('task_form.html', form=form, form_name="New task", action="new_task")
+                else:
+                    db = PostgresDb()
 
+                    tasks = db.sqlalchemy_session.query(Task).all()
+
+                    task_obj = Task(
+                        id = tasks[-1].id + 1,
+                        name=form.name.data,
+                        discipline_name=form.discipline_name.data,
+                        value=form.value.data,
+                        deadline=form.deadline.data
+                    )
+                    db.sqlalchemy_session.add(task_obj)
+                    db.sqlalchemy_session.commit()
+
+                    return redirect(url_for('index_task'))
+
+            return render_template('task_form.html', form=form, form_name="New task", action="new_task")
+
+
+@app.route('/edit_task', methods=['GET', 'POST'])
+def edit_task():
+    if login.isLogged:
+        if login.isAdmin:
+            form = TaskFrom()
+
+            if request.method == 'GET':
+
+                name = request.args.get('name')
+                db = PostgresDb()
+                task_obj = db.sqlalchemy_session.query(Task).filter(Task.name == name).one()
+
+                # fill form and send to user
+                form.name.data = task_obj.name
+                form.discipline_name.data = task_obj.discipline_name
+                form.value.data = task_obj.value
+                form.deadline.data = task_obj.deadline
+                form.old_name.data = task_obj.name
+                return render_template('task_form.html', form=form, form_name="Edit task", action="edit_task")
+
+            else:
+                if not form.validate():
+                    return render_template('task_form.html', form=form, form_name="Edit task",
+                                           action="edit_task")
+                else:
+                    db = PostgresDb()
+                    # find professor
+
+                    task_obj = db.sqlalchemy_session.query(Task).filter(Task.name == form.old_name.data).one()
+
+                    # update fields from form data
+                    task_obj.name = form.name.data
+                    task_obj.discipline_name = form.discipline_name.data
+                    task_obj.value = form.value.data
+                    task_obj.deadline = form.deadline.data
+
+                    db.sqlalchemy_session.commit()
+
+                    return redirect(url_for('index_task'))
+
+@app.route('/delete_task')
+def delete_task():
+    if login.isLogged:
+        if login.isAdmin:
+            name = request.args.get('name')
+
+            db = PostgresDb()
+
+            result = db.sqlalchemy_session.query(Task).filter(Task.name == name).one()
+
+            db.sqlalchemy_session.delete(result)
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('index_task'))
+
+@app.route('/student_task', methods=['GET'])
+def index_student_task():
+    if login.isLogged:
+        if login.isAdmin:
+            db = PostgresDb()
+
+            result = db.sqlalchemy_session.query(Student_Task).all()
+
+            return render_template('student_task.html', tasks=result)
+
+
+@app.route('/new_student_task', methods=['GET', 'POST'])
+def new_student_task():
+    if login.isLogged:
+        if login.isAdmin:
+            form = Student_TaskForm()
+
+            if request.method == 'POST':
+                if not form.validate():
+                    return render_template('student_task_from.html', form=form, form_name="New student_task", action="new_student_task")
+                else:
+                    db = PostgresDb()
+
+                    student_task_obj = Student_Task(
+                        task_id = form.task_id.data,
+                        student_name =form.student_name.data,
+                        student_group =form.student_group.data
+                    )
+
+                    db.sqlalchemy_session.add(student_task_obj)
+                    db.sqlalchemy_session.commit()
+
+                    return redirect(url_for('index_student_task'))
+
+            return render_template('student_task_form.html', form=form, form_name="New student_task", action="new_student_task")
+
+
+@app.route('/edit_student_task', methods=['GET', 'POST'])
+def edit_student_task():
+    if login.isLogged:
+        if login.isAdmin:
+            form = Student_TaskForm()
+
+            if request.method == 'GET':
+
+                id = request.args.get('id')
+                s_name = request.args.get('s_name')
+                s_group = request.args.get('s_group')
+                db = PostgresDb()
+                student_task_obj = db.sqlalchemy_session.query(Student_Task).filter(Student_Task.task_id == id,
+                                                                                    Student_Task.student_name == s_name,
+                                                                             Student_Task.student_group == s_group).one()
+
+                # fill form and send to user
+                form.task_id.data = student_task_obj.task_id
+                form.student_name.data = student_task_obj.student_name
+                form.student_group.data = student_task_obj.student_group
+                form.old_id.data = student_task_obj.task_id
+                form.old_name.data = student_task_obj.student_name
+                form.old_group.data = student_task_obj.student_group
+
+                return render_template('student_task_form.html', form=form, form_name="Edit student_task", action="edit_student_task")
+
+            else:
+                if not form.validate():
+                    return render_template('student_task_form.html', form=form, form_name="Edit student_task",
+                                           action="edit_student_task")
+                else:
+                    db = PostgresDb()
+                    # find professor
+
+                    student_task_obj = db.sqlalchemy_session.query(Student_Task).filter(Student_Task.task_id == form.old_id.data,
+                                                                                    Student_Task.student_name == form.old_name.data,
+                                                                                    Student_Task.student_group == form.old_group.data).one()
+                    # update fields from form data
+                    student_task_obj.task_id = form.task_id.data
+                    student_task_obj.student_name = form.student_name.data
+                    student_task_obj.student_group = form.student_group.data
+
+                    db.sqlalchemy_session.commit()
+
+                    return redirect(url_for('index_student_task'))
+
+@app.route('/delete_student_task')
+def delete_student_task():
+    if login.isLogged:
+        if login.isAdmin:
+            id = request.args.get('id')
+            s_name = request.args.get('s_name')
+            s_group = request.args.get('s_group')
+
+            db = PostgresDb()
+
+            result = db.sqlalchemy_session.query(Student_Task).filter(Student_Task.task_id == id,
+                                                                        Student_Task.student_name == s_name,
+                                                                        Student_Task.student_group == s_group).one()
+
+            db.sqlalchemy_session.delete(result)
+            db.sqlalchemy_session.commit()
+
+            return redirect(url_for('index_student_task'))
 
 @app.route('/student', methods=['GET'])
 def index_student():
-    db = PostgresDb()
+    if login.isLogged:
+        if login.isAdmin:
+            db = PostgresDb()
 
-    result = db.sqlalchemy_session.query(Student).all()
+            result = db.sqlalchemy_session.query(Student).all()
 
-    return render_template('student.html', students=result)
+            return render_template('student.html', students=result)
 
 
 @app.route('/new_student', methods=['GET', 'POST'])
 def new_student():
-    form = StudentForm()
+    if login.isLogged:
+        if login.isAdmin:
+            form = StudentForm()
 
-    if request.method == 'POST':
-        if not form.validate():
+            if request.method == 'POST':
+                if not form.validate():
+                    return render_template('student_form.html', form=form, form_name="New student", action="new_student")
+                else:
+                    student_obj = Student(
+                        name=form.name.data,
+                        sgroup=form.group.data
+                    )
+
+                    db = PostgresDb()
+                    db.sqlalchemy_session.add(student_obj)
+                    db.sqlalchemy_session.commit()
+
+                    return redirect(url_for('index_student'))
+
             return render_template('student_form.html', form=form, form_name="New student", action="new_student")
-        else:
-            student_obj = Student(
-                name=form.name.data,
-                sgroup=form.group.data
-            )
-
-            db = PostgresDb()
-            db.sqlalchemy_session.add(student_obj)
-            db.sqlalchemy_session.commit()
-
-            return redirect(url_for('index_student'))
-
-    return render_template('student_form.html', form=form, form_name="New student", action="new_student")
 
 
 @app.route('/edit_student', methods=['GET', 'POST'])
 def edit_student():
-    form = StudentForm()
+    if login.isLogged:
+        if login.isAdmin:
+            form = StudentForm()
 
-    if request.method == 'GET':
+            if request.method == 'GET':
 
-        name, group = request.args.get('name'), int(request.args.get('group'))
-        db = PostgresDb()
-        student = db.sqlalchemy_session.query(Student).filter(Student.name == name, Student.sgroup == group).one()
+                name, group = request.args.get('name'), int(request.args.get('group'))
+                db = PostgresDb()
+                student = db.sqlalchemy_session.query(Student).filter(Student.name == name, Student.sgroup == group).one()
 
-        # fill form and send to student
-        form.name.data = student.name
-        form.group.data = student.sgroup
-        form.old_name.data = student.name
-        form.old_group.data = student.sgroup
-        return render_template('student_form.html', form=form, form_name="Edit student", action="edit_student")
+                # fill form and send to student
+                form.name.data = student.name
+                form.group.data = student.sgroup
+                form.old_name.data = student.name
+                form.old_group.data = student.sgroup
+                return render_template('student_form.html', form=form, form_name="Edit student", action="edit_student")
 
-    else:
+            else:
 
-        if not form.validate():
-            return render_template('student_form.html', form=form, form_name="Edit student", action="edit_student")
-        else:
+                if not form.validate():
+                    return render_template('student_form.html', form=form, form_name="Edit student", action="edit_student")
+                else:
+                    db = PostgresDb()
+                    # find student
+                    student = db.sqlalchemy_session.query(Student).filter(Student.name == form.old_name.data,
+                                                                          Student.sgroup == form.old_group.data).one()
+
+                    # update fields from form data
+                    student.name = form.name.data
+                    student.sgroup = form.group.data
+
+                    db.sqlalchemy_session.commit()
+
+                    return redirect(url_for('index_student'))
+
+
+@app.route('/delete_student')
+def delete_student():
+    if login.isLogged:
+        if login.isAdmin:
+            name, group = request.args.get('name'), int(request.args.get('group'))
+
             db = PostgresDb()
-            # find student
-            student = db.sqlalchemy_session.query(Student).filter(Student.name == form.old_name.data,
-                                                                  Student.sgroup == form.old_group.data).one()
 
-            # update fields from form data
-            student.name = form.name.data
-            student.sgroup = form.group.data
+            result = db.sqlalchemy_session.query(Student).filter(Student.name == name, Student.sgroup == group).one()
 
+            db.sqlalchemy_session.delete(result)
             db.sqlalchemy_session.commit()
 
             return redirect(url_for('index_student'))
 
 
-@app.route('/delete_student')
-def delete_student():
-    name, group = request.args.get('name'), int(request.args.get('group'))
-
-    db = PostgresDb()
-
-    result = db.sqlalchemy_session.query(Student).filter(Student.name == name, Student.sgroup == group).one()
-
-    db.sqlalchemy_session.delete(result)
-    db.sqlalchemy_session.commit()
-
-    return redirect(url_for('index_student'))
-
-
-# END STUDENT ORIENTED QUERIES ----------------------------------------------------------------------------------------
-
-# DISCIPLINE ORIENTED QUERIES ---------------------------------------------------------------------------------------
-
 @app.route('/discipline', methods=['GET'])
 def index_discipline():
-    db = PostgresDb()
+    if login.isLogged:
+        if login.isAdmin:
+            db = PostgresDb()
 
-    discipline = db.sqlalchemy_session.query(Discipline).all()
+            discipline = db.sqlalchemy_session.query(Discipline).all()
 
-    return render_template('discipline.html', disciplines=discipline)
+            return render_template('discipline.html', disciplines=discipline)
 
 
 @app.route('/new_discipline', methods=['GET', 'POST'])
 def new_discipline():
-    form = DisciplineForm()
+    if login.isLogged:
+        if login.isAdmin:
+            form = DisciplineForm()
 
-    if request.method == 'POST':
-        if not form.validate():
-            return render_template('discipline_form.html', form=form, form_name="New discipline",
-                                   action="new_discipline")
-        else:
-            discipline_obj = Discipline(
-                name=form.name.data,
-                teacher_name=form.teacher_name.data
-            )
+            if request.method == 'POST':
+                if not form.validate():
+                    return render_template('discipline_form.html', form=form, form_name="New discipline",
+                                           action="new_discipline")
+                else:
+                    discipline_obj = Discipline(
+                        name=form.name.data,
+                        teacher_name=form.teacher_name.data
+                    )
 
-            db = PostgresDb()
+                    db = PostgresDb()
 
-            a = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == form.teacher_name.data).all()
-            if not a:
-                return render_template('discipline_form.html', form=form, form_name="New discipline",
-                                       action="new_discipline")
-            db.sqlalchemy_session.add(discipline_obj)
-            db.sqlalchemy_session.commit()
+                    a = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == form.teacher_name.data).all()
+                    if not a:
+                        return render_template('discipline_form.html', form=form, form_name="New discipline",
+                                               action="new_discipline")
+                    db.sqlalchemy_session.add(discipline_obj)
+                    db.sqlalchemy_session.commit()
 
-            return redirect(url_for('index_discipline'))
+                    return redirect(url_for('index_discipline'))
 
-    return render_template('discipline_form.html', form=form, form_name="New discipline", action="new_discipline")
+            return render_template('discipline_form.html', form=form, form_name="New discipline", action="new_discipline")
 
 
 @app.route('/edit_discipline', methods=['GET', 'POST'])
 def edit_discipline():
-    form = DisciplineForm()
+    if login.isLogged:
+        if login.isAdmin:
+            form = DisciplineForm()
 
-    if request.method == 'GET':
-        name = request.args.get('name')
+            if request.method == 'GET':
+                name = request.args.get('name')
 
-        db = PostgresDb()
+                db = PostgresDb()
 
-        # -------------------------------------------------------------------- filter for "and" google
-        discipline = db.sqlalchemy_session.query(Discipline).filter(
-            Discipline.name == name).one()
+                # -------------------------------------------------------------------- filter for "and" google
+                discipline = db.sqlalchemy_session.query(Discipline).filter(
+                    Discipline.name == name).one()
 
-        a = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == discipline.teacher_name).all()
-        if not a:
-            return render_template('discipline_form.html', form=form, form_name="Edit discipline",
-                                   action="edit_discipline")
-        # fill form and send to discipline
-        form.teacher_name.data = discipline.teacher_name
-        form.name.data = discipline.name
-        form.old_name.data = discipline.name
-        return render_template('discipline_form.html', form=form, form_name="Edit discipline", action="edit_discipline")
+                a = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == discipline.teacher_name).all()
+                if not a:
+                    return render_template('discipline_form.html', form=form, form_name="Edit discipline",
+                                           action="edit_discipline")
+                # fill form and send to discipline
+                form.teacher_name.data = discipline.teacher_name
+                form.name.data = discipline.name
+                form.old_name.data = discipline.name
+                return render_template('discipline_form.html', form=form, form_name="Edit discipline", action="edit_discipline")
 
-    else:
+            else:
 
-        if not form.validate():
-            return render_template('discipline_form.html', form=form, form_name="Edit discipline",
-                                   action="edit_discipline")
-        else:
-            db = PostgresDb()
-            # find discipline
-            discipline = db.sqlalchemy_session.query(Discipline).filter(Discipline.name == form.old_name.data, ).one()
+                if not form.validate():
+                    return render_template('discipline_form.html', form=form, form_name="Edit discipline",
+                                           action="edit_discipline")
+                else:
+                    db = PostgresDb()
+                    # find discipline
+                    discipline = db.sqlalchemy_session.query(Discipline).filter(Discipline.name == form.old_name.data, ).one()
 
-            # update fields from form data
-            discipline.name = form.name.data
-            discipline.teacher_name = form.teacher_name.data
+                    # update fields from form data
+                    discipline.name = form.name.data
+                    discipline.teacher_name = form.teacher_name.data
 
-            db.sqlalchemy_session.commit()
+                    db.sqlalchemy_session.commit()
 
-            return redirect(url_for('index_discipline'))
+                    return redirect(url_for('index_discipline'))
 
 
 @app.route('/delete_discipline')
 def delete_discipline():
-    name = request.args.get('name')
-    db = PostgresDb()
+    if login.isLogged:
+        if login.isAdmin:
+            name = request.args.get('name')
+            db = PostgresDb()
 
-    result = db.sqlalchemy_session.query(Discipline).filter(
-        Discipline.name == name).one()
+            result = db.sqlalchemy_session.query(Discipline).filter(
+                Discipline.name == name).one()
 
-    db.sqlalchemy_session.delete(result)
-    db.sqlalchemy_session.commit()
+            db.sqlalchemy_session.delete(result)
+            db.sqlalchemy_session.commit()
 
-    return redirect(url_for('index_discipline'))
+            return redirect(url_for('index_discipline'))
 
-
-# END DISCIPLINE ORIENTED QUERIES -----------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     app.run(debug=True)
