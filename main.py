@@ -10,7 +10,6 @@ from forms.task_form import TaskFrom
 from forms.student_task_form import Student_TaskForm
 
 import cluster
-
 import json
 import plotly
 import plotly.graph_objs as go
@@ -74,35 +73,9 @@ def root():
 @app.route('/analysis', methods=['GET', 'POST'])
 def analysis():
 
-    data = {}
+    cluster_data = cluster.create_model()
 
-    cluster_data = cluster.get_cluster_val(student_name=login.name)
-
-    scatter_1 = go.Scatter(
-        x=[i[0] for i in cluster_data[2]], y=[i[1] for i in cluster_data[2]],
-        name='Hard',
-        mode='markers',
-        marker_color='rgba(152, 0, 0, .8)'
-    )
-    scatter_2 = go.Scatter(
-        x=[i[0] for i in cluster_data[3]], y=[i[1] for i in cluster_data[3]],
-        name='Light',
-        mode='markers',
-        marker_color='rgba(0,0,0,1)'
-    )
-    scatter_3 = go.Scatter(
-        x=cluster_data[0], y=cluster_data[1],
-        name='centers',
-        mode='markers',
-        marker={"symbol": "star-triangle-down-open"},
-        marker_color='rgba(21,140,0,1)'
-    )
-
-    data["scatter_all_cluster"] = [scatter_1, scatter_2, scatter_3]
-    json_data = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
-
-
-    return render_template('analysis.html',  json=json_data,predicted_cluster=cluster_data[-1])
+    return render_template('analysis.html', clusters = cluster_data)
 
 
 @app.route('/teacher', methods=['GET'])
@@ -131,6 +104,11 @@ def new_teacher():
                         degree=form.degree.data
                     )
                     db = PostgresDb()
+                    check = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == teacher_obj.name).all()
+                    if check:
+                        form.name.errors = ["Entity already exists"]
+                        return render_template('teacher_form.html', form=form, form_name="New teacher",action="new_teacher")
+
                     db.sqlalchemy_session.add(teacher_obj)
                     db.sqlalchemy_session.commit()
 
@@ -222,6 +200,19 @@ def new_task():
                         value=form.value.data,
                         deadline=form.deadline.data
                     )
+                    check = db.sqlalchemy_session.query(Task).filter(Task.name == task_obj.name,
+                                                                     Task.discipline_name == task_obj.discipline_name,
+                                                                     Task.deadline == task_obj.deadline).all()
+                    if check:
+                        form.name.errors = ["Entity already exists"]
+                        return render_template('task_form.html', form=form, form_name="New task", action="new_task")
+
+                    d = db.sqlalchemy_session.query(Discipline).filter(
+                        Discipline.name == task_obj.discipline_name).all()
+                    if not d:
+                        form.discipline_name.errors = ["No discipline found"]
+                        return render_template('task_form.html', form=form, form_name="New task", action="new_task")
+
                     db.sqlalchemy_session.add(task_obj)
                     db.sqlalchemy_session.commit()
 
@@ -260,6 +251,10 @@ def edit_task():
 
                     task_obj = db.sqlalchemy_session.query(Task).filter(Task.name == form.old_name.data).one()
 
+                    d = db.sqlalchemy_session.query(Discipline).filter(Discipline.name == form.discipline_name.data).all()
+                    if not d:
+                        form.discipline_name.errors = ["No discipline found"]
+                        return render_template('task_form.html', form=form, form_name="Edit task",action="edit_task")
                     # update fields from form data
                     task_obj.name = form.name.data
                     task_obj.discipline_name = form.discipline_name.data
@@ -313,6 +308,23 @@ def new_student_task():
                         student_name =form.student_name.data,
                         student_group =form.student_group.data
                     )
+                    check = db.sqlalchemy_session.query(Student_Task).filter(Student_Task.task_id == student_task_obj.task_id,
+                                                            Student_Task.student_name == student_task_obj.student_name,
+                                                    Student_Task.student_group == student_task_obj.student_group).all()
+                    if check:
+                        form.name.errors = ["Entity already exists"]
+                        return render_template('student_task_form.html', form=form, form_name="New student_task", action="new_student_task")
+
+                    s = db.sqlalchemy_session.query(Student).filter(Student.name == student_task_obj.student_name,
+                                                                    Student.sgroup == student_task_obj.student_group).all()
+                    if not s:
+                        form.student_name.errors = ["No student found"]
+                        return render_template('student_task_form.html', form=form, form_name="New student_task", action="new_student_task")
+
+                    t = db.sqlalchemy_session.query(Task).filter(Task.id == student_task_obj.task_id).all()
+                    if not t:
+                        form.task_id.errors = ["No tasks found"]
+                        return render_template('student_task_form.html', form=form, form_name="New student_task", action="new_student_task")
 
                     db.sqlalchemy_session.add(student_task_obj)
                     db.sqlalchemy_session.commit()
@@ -356,9 +368,25 @@ def edit_student_task():
                     db = PostgresDb()
                     # find professor
 
+
+
                     student_task_obj = db.sqlalchemy_session.query(Student_Task).filter(Student_Task.task_id == form.old_id.data,
                                                                                     Student_Task.student_name == form.old_name.data,
                                                                                     Student_Task.student_group == form.old_group.data).one()
+
+                    s = db.sqlalchemy_session.query(Student).filter(Student.name == form.old_name.data,
+                                                                    Student.sgroup == form.old_group.data).all()
+                    if not s:
+                        form.student_name.errors = ["No student found"]
+                        return render_template('student_task_form.html', form=form, form_name="Edit student_task",
+                                               action="edit_student_task")
+
+                    t = db.sqlalchemy_session.query(Task).filter(Task.id == form.old_id.data).all()
+                    if not t:
+                        form.task_id.errors = ["No tasks found"]
+                        return render_template('student_task_form.html', form=form, form_name="Edit student_task",
+                                               action="edit_student_task")
+
                     # update fields from form data
                     student_task_obj.task_id = form.task_id.data
                     student_task_obj.student_name = form.student_name.data
@@ -414,6 +442,13 @@ def new_student():
                     )
 
                     db = PostgresDb()
+
+                    check = db.sqlalchemy_session.query(Student).filter(Student.name== student_obj.name,
+                                                                     Student.sgroup== student_obj.sgroup).all()
+                    if check:
+                        form.name.errors = ["Entity already exists"]
+                        return render_template('student_form.html', form=form, form_name="New student", action="new_student")
+
                     db.sqlalchemy_session.add(student_obj)
                     db.sqlalchemy_session.commit()
 
@@ -504,9 +539,15 @@ def new_discipline():
                     )
 
                     db = PostgresDb()
+                    check = db.sqlalchemy_session.query(Discipline).filter(Discipline.name== discipline_obj.name,
+                                                                        Discipline.teacher_name== discipline_obj.teacher_name).all()
+                    if check:
+                        form.name.errors = ["Entity already exists"]
+                        return render_template('discipline_form.html', form=form, form_name="New discipline", action="new_discipline")
 
                     a = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == form.teacher_name.data).all()
                     if not a:
+                        form.teacher_name.errors = ["No teacher found"]
                         return render_template('discipline_form.html', form=form, form_name="New discipline",
                                                action="new_discipline")
                     db.sqlalchemy_session.add(discipline_obj)
@@ -550,8 +591,13 @@ def edit_discipline():
                 else:
                     db = PostgresDb()
                     # find discipline
-                    discipline = db.sqlalchemy_session.query(Discipline).filter(Discipline.name == form.old_name.data, ).one()
+                    discipline = db.sqlalchemy_session.query(Discipline).filter(Discipline.name == form.old_name.data).one()
 
+                    a = db.sqlalchemy_session.query(Teacher).filter(Teacher.name == form.teacher_name.data).all()
+                    if not a:
+                        form.teacher_name.errors = ["No teacher found"]
+                        return render_template('discipline_form.html', form=form, form_name="Edit discipline",
+                                           action="edit_discipline")
                     # update fields from form data
                     discipline.name = form.name.data
                     discipline.teacher_name = form.teacher_name.data

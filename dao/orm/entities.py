@@ -11,12 +11,18 @@ class Student(Base):
     name = Column(String, primary_key=True)
     sgroup = Column(Integer, primary_key=True)
 
+    sd_entity = relationship('Student_Discipline',  cascade = "delete")
+    st_entity = relationship('Student_Task',  cascade = "delete")
+    user_entity = relationship('Users' ,  cascade = "delete")
+
 
 class Teacher(Base):
     __tablename__ = 'Teacher'
 
     name = Column(String, primary_key=True)
     degree = Column(String(255), nullable=False)
+
+    discipline_entity = relationship('Discipline', cascade = "delete")
 
 
 class Discipline(Base):
@@ -25,7 +31,8 @@ class Discipline(Base):
     name = Column(String(255), primary_key=True)
     teacher_name = Column(String(255), ForeignKey('Teacher.name'))
 
-    teacher_entity = relationship("Teacher")
+    st_entity = relationship("Student_Discipline", cascade = "delete")
+    task_entity = relationship("Task", cascade = "delete")
 
 
 class Task(Base):
@@ -37,7 +44,7 @@ class Task(Base):
     value = Column(Integer, nullable=False)
     deadline = Column(Date, nullable=False)
 
-    discipline_entity = relationship("Discipline")
+    st_entity = relationship('Student_Task', cascade = "delete")
 
 
 class Student_Discipline(Base):
@@ -47,8 +54,6 @@ class Student_Discipline(Base):
     student_group = Column(Integer, primary_key=True)
     points = Column(Integer, nullable=False)
 
-    discipline_entity = relationship("Discipline")
-    student_entity = relationship("Student")
     __table_args__ = (ForeignKeyConstraint([student_name, student_group],
                                            [Student.name,
                                             Student.sgroup]), {})
@@ -60,7 +65,6 @@ class Student_Task(Base):
     student_name = Column(String(255), primary_key=True)
     student_group = Column(Integer, primary_key=True)
 
-    student_entity = relationship("Student")
     task_entity = relationship("Task")
     __table_args__ = (ForeignKeyConstraint([student_name, student_group],
                                            [Student.name,
