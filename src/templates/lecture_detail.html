@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Lecture: {{ object.name }}, v{{ lecture.version }}</h1>
+
+  {{ lecture.text }}
+
+  <br>
+  <br>
+  Like count: {{ likes }}
+
+  <br>
+  <br>
+
+
+  {% if not lecture.original_lecture %}
+  <a href="{% url 'predict_score' lecture_id=lecture.id %}">Prediction</a>
+  <br>
+  Other versions: <br>
+  {% for lecture in other_versions %}
+  <a href="{% url 'lecture_detail' pk=lecture.id %}">v{{ lecture.version }}: {{ lecture.name }}</a> <br>
+  {% endfor %}
+  {% endif %}
+
+  <br>
+  <br>
+  <br>
+  <h2>Comments</h2>
+  {% for c in object.lecturecomment_set.all %}
+      {{ c.text }} - {{ c.user.full_name }} <br>
+  {% endfor %}
+  <br>
+  <br>
+  <br>
+
+  <form method="post" action="{% url 'lecture_detail' pk=object.pk %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Send">
+  </form>
+  <a href="{% url 'lecture_detail' pk=lecture.id %}?like=True">Like</a>
+{% endblock %}

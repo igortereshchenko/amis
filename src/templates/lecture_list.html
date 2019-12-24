@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for lecture in object_list %}
+  <h1>Lectures</h1>
+  <a href="{% url 'lecture_detail' pk=lecture.id %}">{{ lecture.name }}</a> <br>
+{% endfor %}
+{% endblock %}
