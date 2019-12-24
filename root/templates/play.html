@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/play_style.css') }}">
+
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <label class="navbar-brand">{{player.username}}</label>
+    <label class="navbar-brand">Your balance is {{player.balance}}</label>
+    <a class="btn btn-light" href="{{url_for('player_history')}}">Bet history</a>
+    <a href="{{url_for('buy_chips')}}" class="btn btn-light">Get more chips</a>
+    <a href="{{url_for('logout')}}" class="btn btn-danger">Log out</a>
+</nav>
+
+
+<p>Please make your bet</p>
+<form action="/home" method="post">
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="black" checked>
+        <label class="form-check-label" for="exampleRadios1">
+            Black
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="red">
+        <label class="form-check-label" for="exampleRadios2">
+            Red
+        </label>
+    </div>
+    <div class="form-check">
+        <select class="form-control" name="bet_number">
+            {% for element in lst %}
+            <option>{{element}}</option>
+            {% endfor %}
+        </select>
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Enter amount of bet</label>
+            <textarea class="form-control" name="moneyToBet" id="exampleFormControlTextarea1" rows="1">{{request.form.moneyToBet}}</textarea>
+        </div>
+        {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+            {% endif %}
+    </div>
+    <input class="btn btn-success" type="submit" value="Make a bet">
+</form>
+<table class="table table-striped">
+    <tbody>
+    <tr>
+        <td>Your bet: {{player_bet}}</td>
+        <td>Result: {{bet}}</td>
+    </tr>
+    </tbody>
+</table>
+<p>{{bet_result}}</p>
+
+</body>
+</html>
