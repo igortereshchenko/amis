@@ -1,0 +1,30 @@
+{% extends 'authentication/layout.html' %}
+
+{% block content %}
+<span id="auth-label">Login</span>
+<form method="post">
+    {{form.hidden_tag()}}
+
+    <div class="form-group">
+        {{form.Username.label}}
+        {{form.Username(class_="form-control")}}
+    </div>
+    <div class="form-group">
+        {{form.Password.label}}
+        {{form.Password(class_="form-control")}}
+    </div>
+    <div class="d-flex flex-row-reverse align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <a href="{{url_for('signup')}}" class="auth-button auth-other-option">Sign Up</a>
+            {{form.Submit(class_="auth-button")}}
+        </div>
+        {% if form.errors %}
+            <span class="auth-error">{{ form.errors[list(form.errors.keys()[0])[0]] }}</span>
+        {% else %}
+            {% if error %}
+                <span class="auth-error">{{ error }}</span>
+            {% endif %}
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

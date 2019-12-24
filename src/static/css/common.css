@@ -1,0 +1,275 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Bai Jamjuree', sans-serif;
+}
+
+a:hover, a:visited, a:link, a:active {
+    text-decoration: none;
+    outline: none;
+}
+
+button:focus {
+    outline:0;
+    border: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #f2f2f2;
+}
+
+
+#header {
+    padding: 15px 0;
+    background-color: #fff;
+    border-bottom: 0.5px solid #e6e6e6;
+}
+
+#header__logo {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+#header__navigation a {
+    font-size: 1.1em;
+    margin-left: 30px !important;
+    color: black;
+    padding: 5px;
+}
+
+#header__navigation a:hover {
+    color: red;
+}
+
+#logout input {
+    border: none;
+    background-color: #fff;
+    font-size: 1.1em;
+}
+
+#logout i {
+    margin-left: 7px;
+}
+
+#content {
+    margin-top: 25px;
+}
+
+#content__page__header {
+    margin-bottom: 25px;
+}
+
+#content__page__header span {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.delete-record {
+    margin-left: 10px;
+}
+
+.checkbox-input input {
+    height: 15px;
+    width: 15px;
+    margin-left: 30px;
+    margin-bottom: 5px;
+}
+
+.dashboard_filter span {
+    font-size: 1.5em;
+}
+
+.dashboard_filter select {
+    width: 38%;
+    margin-left: 2px;
+}
+
+.card {
+    margin-bottom: 10px;
+    border: none;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, .05);
+}
+
+.card form {
+    width: 100%;
+}
+
+.card-title, .card-subtitle {
+    margin: 0;
+}
+
+.mb-2 {
+    margin-bottom: 0 !important;
+}
+
+.card-head {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.card-actions {
+    display: flex;
+    align-items: center;
+}
+
+.card-action {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    font-weight: lighter;
+    font-size: 1.1em;
+    background-color: #fff;
+    border:none;
+    color: #000;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.card-action:hover {
+    color: red;
+}
+
+.card-action i{
+    font-size: 0.9em;
+    margin-right: 5px;
+}
+
+.card-title-icon {
+    font-size: 1.3em;
+    width: 25px;
+    margin-right: 15px;
+}
+
+.form-actions {
+    margin-top: 15px;
+    display: flex;
+    align-items: start;
+}
+
+.form-actions button,
+.form-actions a{
+    display: flex;
+    align-items: center;
+    border: none;
+    color: #363636;
+    background-color: #fff;
+    margin-right: 20px;
+}
+
+.form-actions *.submit:hover {
+    color: #00db30;
+}
+
+.form-actions *.cancel:hover {
+    color: red;
+}
+
+.form-actions i {
+    margin-right: 3px;
+}
+
+#breadcrumb {
+    padding: 7px 1.25rem;
+}
+
+#breadcrumb a {
+    color: #d6d6d6;
+}
+
+#breadcrumb a:hover {
+    color: #000;
+}
+
+.breadcrumb-delimiter {
+    margin: 0 5px;
+}
+
+#back_page  {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-right: 1px solid silver;
+    color: #000;
+}
+
+#back_page i {
+    font-size: 1.1em;
+}
+
+#back_page:hover {
+    color: red;
+}
+
+.table {
+    border-color: #d9d9d9 !important;
+    border-radius: 10px;
+}
+
+.table > thead {
+    background-color: #f2f2f2 !important;
+}
+
+
+#auth-card {
+    width: 450px;
+}
+
+#auth-label {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.auth-button {
+    cursor: pointer;
+}
+
+.auth-button {
+    border: none;
+    background-color: #fff;
+    margin-right: 5px;
+    color: #000;
+    font-size: 1.2em;
+}
+
+
+.auth-button:hover {
+    color: red;
+}
+
+
+.auth-error {
+    margin-right: 20px;
+    color: red;
+}
+
+.auth-other-option {
+    padding-right: 10px;
+    color: silver;
+    border-right: 1px solid silver;
+    margin-right: 10px;
+}
+
+.nav-icon {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+}
+
+#entity_attribute_correlation {
+    margin-bottom: 10px;
+}
+
+#classification-input {
+    width: 100%;
+    margin: 20px 0;
+}
+
+#classification-input button {
+    width: 10%;
+    margin-left: 20px;
+}

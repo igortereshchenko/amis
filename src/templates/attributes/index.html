@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div id="content__page__header" class="d-flex justify-content-between align-items-center">
+        <span>Attributes</span>
+        <a href="{{url_for('new_attribute')}}" class="btn btn-primary">Add new attribute</a>
+    </div>
+    <div id="content__page__body">
+        <table class="table">
+            <thead>
+            <tr>
+                <th style="width: 15%">Name</th>
+                <th style="width: 12%">Type</th>
+                <th style="width: 13%">Entity</th>
+                <th style="width: 10%">Is Null</th>
+                <th style="width: 15%">Is Primary Key</th>
+                <th style="width: 20%">Created On</th>
+                <th style="width: 15%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for attribute in attributes: %}
+                <tr>
+                    <td>{{ attribute.Name }}</td>
+                    <td>{{ attribute.Type }}</td>
+                    <td>{{ attribute.Entity.Name }}</td>
+                    <td>{{ attribute.IsNull }}</td>
+                    <td>{{ attribute.IsPrimaryKey }}</td>
+                    <td>{{ attribute.CreatedOn.strftime("%b %d %Y %H:%M:%S")  }}</td>
+                    <td class="d-flex justify-content-end">
+                        <a href="{{url_for('update_attribute', uuid=attribute.Id)}}" class="btn btn-success">Edit</a>
+                        <form method="post" action="{{url_for('delete_attribute', uuid=attribute.Id)}}" class="delete-record">
+                            <input type="submit" value="Delete" class="btn btn-danger"/>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
