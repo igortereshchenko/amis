@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DBBuilder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tables-min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Bai+Jamjuree&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span id="header__logo">DBBuilder</span>
+            <div id="header__navigation" class="d-flex">
+                <div class="d-flex">
+                    {% if current_user.IsAdmin %}
+                         <a href="{{url_for('users')}}" class="card-action">
+                            <i class="ft-users"></i>
+                            <span>Users</span>
+                        </a>
+                        <a href="{{url_for('statistics')}}" class="card-action">
+                            <i class="ft-bar-chart-2"></i>
+                            <span>Statistics</span>
+                        </a>
+                    {% endif %}
+                    <a href="{{url_for('schemas')}}" class="card-action">
+                        <i class="ft-cloud"></i>
+                        <span>Schemas</span>
+                    </a>
+                </div>
+                <form method="post" action="{{ url_for('logout')}}" class="d-flex align-items-center" id="logout">
+                    <button type="submit" class="card-action">
+                        <i class="ft-log-out"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <div class="container d-flex flex-column" id="content__page">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

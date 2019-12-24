@@ -1,0 +1,84 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="card d-flex flex-row align-items-center">
+      <a href="{{url_for('schemas')}}" id="back_page">
+         <i class="ft-chevrons-left"></i>
+      </a>
+      <div class="card-body d-flex align-items-center" id="breadcrumb">
+          <a href="{{ url_for('schemas')}}">Schemas</a>
+          <div class="breadcrumb-delimiter">/</div>
+          <span>{{ view.schema.Name }}</span>
+      </div>
+    </div>
+    <div class="card d-flex">
+      <div class="card-body d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            <img class="card-title-icon" src="{{ url_for('static', filename='images/share.svg') }}">
+              <div class="d-flex align-items-start flex-column">
+                <h5 class="card-title">{{ view.schema.Name }}</h5>
+                <span class="card-subtitle mb-2 text-muted">{{ view.schema.CreatedOn.strftime("%b %d %Y %H:%M") }}</span>
+              </div>
+          </div>
+          <div class="card-actions">
+            <a href="{{url_for('update_schema', uuid = view.schema.Id)}}" class="card-action">
+                <i class="ft-edit-3"></i>
+                <span>Edit</span>
+            </a>
+            <form method="post">
+                <button type="submit" class="card-action">
+                    <i class="ft-download"></i>
+                    <span>SQL</span>
+                </button>
+            </form>
+              <form method="post" action="{{url_for('delete_schema', uuid=view.schema.Id)}}">
+                <button type="submit" class="card-action">
+                    <i class="ft-trash-2"></i>
+                    <span>Delete</span>
+                </button>
+            </form>
+        </div>
+      </div>
+    </div>
+    <div class="card d-flex">
+      <div class="card-body d-flex flex-column align-items-center justify-content-between">
+          <div class="card-head">
+            <h5 class="card-title">Entities</h5>
+              <div class="card-actions">
+                  <a href="{{url_for('new_entity', uuid = view.schema.Id)}}" class="card-action">
+                      <i class="ft-plus"></i>
+                  </a>
+            </div>
+          </div>
+          <table class="table pure-table pure-table-horizontal">
+            <thead>
+            <tr>
+                <th style="width: 33%">Name</th>
+                <th style="width: 33%">Override Existed</th>
+                <th style="width: 33%">Created On</th>
+                <th style="width: 33%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for entity in view.entities: %}
+                <tr>
+                    <td>{{ entity.Name }}</td>
+                    <td>{{ entity.IsOverrideExisted }}</td>
+                    <td>{{ entity.CreatedOn.strftime("%b %d %Y %H:%M:%S") }}</td>
+                    <td class="d-flex justify-content-end">
+                        <form method="post" action="{{url_for('delete_entity', uuid=entity.Id)}}">
+                            <button type="submit" class="card-action">
+                                <i class="ft-trash-2"></i>
+                            </button>
+                        </form>
+                        <a href="{{url_for('entity_info', uuid=entity.Id)}}" class="card-action">
+                            <i class="ft-chevrons-right"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+{% endblock %}

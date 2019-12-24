@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="card d-flex flex-row align-items-center">
+    <a href="{{ url_for('schema_info', uuid=view.schema.Id)}}" id="back_page">
+        <i class="ft-chevrons-left"></i>
+    </a>
+    <div class="card-body d-flex align-items-center" id="breadcrumb">
+        <a href="{{ url_for('schemas')}}">Schemas</a>
+        <div class="breadcrumb-delimiter">/</div>
+        <a href="{{ url_for('schema_info', uuid=view.schema.Id)}}">{{ view.schema.Name }}</a>
+        <div class="breadcrumb-delimiter">/</div>
+        <span>{{view.entity.Name}}</span>
+    </div>
+</div>
+<div class="card d-flex">
+    <div class="card-body d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <img class="card-title-icon" src="{{ url_for('static', filename='images/spreadsheet.svg') }}">
+            <div class="d-flex align-items-start flex-column">
+                <h5 class="card-title">{{ view.entity.Name }}</h5>
+                <span class="card-subtitle mb-2 text-muted">{{ view.entity.CreatedOn.strftime("%b %d %Y %H:%M") }}</span>
+            </div>
+        </div>
+        <div class="card-actions">
+            <a href="{{url_for('update_entity', uuid = view.entity.Id)}}" class="card-action">
+                <i class="ft-edit-3"></i>
+                <span>Edit</span>
+            </a>
+            <form method="post">
+                <button type="submit" class="card-action">
+                    <i class="ft-download"></i>
+                    <span>SQL</span>
+                </button>
+            </form>
+            <form action="{{url_for('delete_entity', uuid=view.entity.Id)}}" method="post">
+                <button type="submit" class="card-action">
+                    <i class="ft-trash-2"></i>
+                    <span>Delete</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="card d-flex">
+    <div class="card-body d-flex flex-column align-items-center justify-content-between">
+        <div class="card-head">
+            <h5 class="card-title">Attributes</h5>
+            <div class="card-actions">
+                <a href="{{url_for('new_attribute', uuid = view.entity.Id)}}" class="card-action">
+                    <i class="ft-plus"></i>
+                </a>
+            </div>
+        </div>
+        <table class="table pure-table pure-table-horizontal">
+            <thead>
+            <tr>
+                <th style="width: 20%">Name</th>
+                <th style="width: 20%">Type</th>
+                <th style="width: 12%">Is Null</th>
+                <th style="width: 17%">Is Primary Key</th>
+                <th style="width: 18%">Created On</th>
+                <th style="width: 5%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for attribute in view.attributes: %}
+            <tr>
+                <td>{{ attribute.Name }}</td>
+                <td>{{ attribute.Type }}</td>
+                <td>{{ attribute.IsNull }}</td>
+                <td>{{ attribute.IsPrimaryKey }}</td>
+                <td>{{ attribute.CreatedOn.strftime("%b %d %Y %H:%M:%S") }}</td>
+                <td class="d-flex justify-content-end">
+                    <a href="{{url_for('update_attribute', uuid=attribute.Id)}}" class="card-action">
+                        <i class="ft-edit-3"></i>
+                    </a>
+                    <form method="post" action="{{url_for('delete_attribute', uuid=attribute.Id)}}">
+                        <button type="submit" class="card-action">
+                            <i class="ft-trash-2"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

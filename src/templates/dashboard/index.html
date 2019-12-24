@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<script src="{{ url_for('static', filename='js/plotly.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<div class="row">
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center dashboard_filter">
+            <span>Schema entities distribution</span>
+            <select class="form-control" id="schema_distribution_select">
+                {% for schema in model.Schemas %}
+                    <option value="{{schema[0]}}">{{schema[1]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="chart" id="schemas_distribution_data">
+            <script>
+                var schemas_distribution_data = {{ model.Schemas_distribution_data  | safe }};
+                Plotly.plot('schemas_distribution_data', schemas_distribution_data, {});
+            </script>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center dashboard_filter">
+            <span>Entities attributes population</span>
+            <select class="form-control" id="entity_attributes_population_select">
+                {% for entity in model.Entities %}
+                    <option value="{{entity[0]}}">{{entity[0]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="chart" id="entity_attributes_population_graph">
+            <script>
+                var entity_attributes_population_data= {{ model.Entities_attributes_population_data  | safe }};
+                Plotly.plot('entity_attributes_population_graph', entity_attributes_population_data, {});
+            </script>
+        </div>
+    </div>
+</div>
+{% endblock %}

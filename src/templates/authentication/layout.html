@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.min.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Bai+Jamjuree&display=swap" rel="stylesheet">
+</head>
+<body class="d-flex align-items-center justify-content-center">
+    <div class="card d-flex" id="auth-card">
+      <div class="card-body d-flex flex-column align-items-center justify-content-between">
+            {% block content %}{% endblock %}
+          </form>
+      </div>
+    </div>
+</body>
+</html>

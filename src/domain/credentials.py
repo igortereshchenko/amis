@@ -1,0 +1,5 @@
+username = "postgres"
+password = "140599Artem"
+host = "localhost"
+port = "5432"
+database = "dbbuilder"
