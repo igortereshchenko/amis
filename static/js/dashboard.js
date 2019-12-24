@@ -1,16 +1,9 @@
-window.addTestListener("load", (e) => {
+window.addEventListener("load", (e) => {
 
-     $('#client_distribution_select').on("change", function () {
+     $('#entity_attributes_population_select').on("change", function () {
          var value = $(this).find("option:selected").val();
-         $.getJSON(`/client_distribution/${value}`, data => {
-            Plotly.newPlot('clients_distribution_data', data, {});
-        })
-     });
-
-     $('#product_shops_population_select').on("change", function () {
-         var value = $(this).find("option:selected").val();
-         $.getJSON(`/product_shops_population/${value}`, data => {
-            Plotly.newPlot('product_shops_population_graph', data, {});
+         $.getJSON(`/entity_attributes_population/${value}`, data => {
+            Plotly.newPlot('entity_attributes_population_graph', data, {});
         })
      });
 });
