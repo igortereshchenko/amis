@@ -334,6 +334,11 @@ def edit_subject():
             subject.subj_name = form.subject_name.data
             subject.subj_hours = form.subject_hours.data
 
+            # s = db.sqlalchemy_session.query(Subject).filter(Subject.subj_name == subject.subj_name).all()
+            # if s:
+            #     form.subject_name.errors = ["Subject already exists"]
+            #     return render_template('subject_form.html', form=form, form_name="New subject", action="new_subject")
+
             db.sqlalchemy_session.commit()
 
             return redirect(url_for('index_subject'))
@@ -419,6 +424,14 @@ def new_scedule():
             if not d:
                 form.group_id_fk.errors = ["No such group"]
                 return render_template('scedule_form.html', form=form, form_name="New scedule", action="new_scedule")
+            dd = db.sqlalchemy_session.query(Teacher).filter(Teacher.teacher_id == scedule_obj.teach_id_fk).all()
+            if not dd:
+                form.group_id_fk.errors = ["No such teacher"]
+                return render_template('scedule_form.html', form=form, form_name="New scedule", action="new_scedule")
+            ddd = db.sqlalchemy_session.query(Subject).filter(Subject.subj_name == scedule_obj.subj_name_fk).all()
+            if not ddd:
+                form.group_id_fk.errors = ["No such subject"]
+                return render_template('scedule_form.html', form=form, form_name="New scedule", action="new_scedule")
             db.sqlalchemy_session.add(scedule_obj)
             db.sqlalchemy_session.commit()
 
@@ -429,7 +442,7 @@ def new_scedule():
 
 @app.route('/edit_scedule', methods=['GET', 'POST'])
 def edit_scedule():
-    form = SubjectForm()
+    form = SceduleForm()
 
     if request.method == 'GET':
         times, days, group_id_fk = request.args.get('times'), request.args.get('days'), request.args.get('group_id_fk')
@@ -439,16 +452,16 @@ def edit_scedule():
         scedule = db.sqlalchemy_session.query(Scedule).filter(
             Scedule.times == times,
             Scedule.days == days,
-            Scedule.days == days,
-            Scedule.group_id_fk).one()
+            Scedule.group_id_fk == group_id_fk).one()
 
-        # fill form and send to discipline
+        # fill form and send to scedule
         form.group_id_fk.data = scedule.group_id_fk
         form.teach_id_fk.data = scedule.teach_id_fk
         form.subj_name_fk.data = scedule.subj_name_fk
         form.auditorium.data = scedule.auditorium
         form.times.data = scedule.times
         form.days.data = scedule.days
+
 
         return render_template('scedule_form.html', form=form, form_name="Edit scedule", action="edit_scedule")
 
@@ -466,7 +479,7 @@ def edit_scedule():
                 Scedule.group_id_fk == form.group_id_fk. data).one()
 
             # update fields from form data
-            scedule.group_id_fk = form.group_if_fk.data
+            scedule.group_id_fk = form.group_id_fk.data
             scedule.teach_id_fk = form.teach_id_fk.data
             scedule.subj_name_fk = form.subj_name_fk.data
             scedule.auditorium = form.auditorium.data
@@ -531,8 +544,8 @@ def findClass(input, data, classes):
 @app.route('/analysis', methods=['GET', 'POST'])
 def analysis():
     a = db.sqlalchemy_session.query(Scedule).all()
-    teacher = [[11], [12]]
-    classes = ['A', 'B']
+    teacher = [[2], [6], [10]]
+    classes = ['Mostly-free', 'Middle-packed', 'Packed']
     table = {}
     audits = {}
     for s in a:
