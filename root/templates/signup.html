@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up doctor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <label class="navbar-brand">{{username}}</label>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a href="{{url_for('logout')}}" class="btn btn-danger">Back to main page</a>
+
+        </div>
+    </div>
+</nav>
+<div class="main">
+    <div class="col-md-6 col-sm-12">
+        <div class="login-form">
+
+            {% if error %}
+            <p class="error"><strong>Error:</strong> {{ error }}
+                {% endif %}
+            <h1>Create an Account</h1> <br>
+            <form id="signup" method="post" action="/signup">
+
+
+                <div class="form-group">
+                    <label>Choose your unique username</label>
+                    <input name="username" type="text" placeholder="Username" class="form-control"
+                           required="required"
+                           value="{{request.form.new_username}}"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Your name</label>
+                    <input name="name" type="text" placeholder="name" class="form-control" required="required"
+                           value="{{request.form.name}}"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Your surname</label>
+                    <input name="surname" type="text" placeholder="name" class="form-control" required="required"
+                           value="{{request.form.surname}}"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Choose a password</label>
+                    <input name="password" type="password" placeholder="password"
+                           required="required" value="{{request.form.new_password}}"
+                           class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>Confirm a password</label>
+                    <input name="password1" type="password" placeholder="confirm password"
+                           required="required" value="{{request.form.new_password1}}"
+                           class="form-control"/>
+                </div>
+
+                <button type="submit" value="Sign-up!" class="btn btn-success">Sign up</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

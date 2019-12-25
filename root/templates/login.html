@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Start</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+</head>
+<body>
+
+<div class="sidenav">
+    <div class="login-main-text">
+        <h2>YOUR ONLINE MEDIC</h2>
+    </div>
+</div>
+<div class="main">
+    <div class="col-md-6 col-sm-12">
+        <div class="login-form">
+
+            {% if error %}
+            <p class="error"><strong>Error:</strong> {{ error }}
+                {% endif %}
+            <form method="post" action="/login">
+                <div class="form-group">
+                    <label>User Name</label>
+                    <input type="text" class="form-control" placeholder="Username" name="username" value="{{
+          request.form.username }}">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" placeholder="Password" name="password" value="{{
+          request.form.password }}">
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
+                           value="patient"
+                           checked>
+                    <label class="form-check-label" for="exampleRadios1">
+                        I am patient
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
+                           value="doctor">
+                    <label class="form-check-label" for="exampleRadios2">
+                        I am doctor
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-success" value="Login">Login</button>
+                <a href="{{url_for('signup')}}" class="btn btn-secondary">Register doctor</a>
+                <a href="{{url_for('signup_patient')}}" class="btn btn-secondary">Register patient</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
