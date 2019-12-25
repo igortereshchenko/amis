@@ -1,0 +1,129 @@
+{% extends "index.html" %}
+{% block content %}
+    <script>
+        Plotly.d3.csv('', function(){
+
+        var data = [{
+            x: {{ x }},
+            y: {{ y }},
+            z: {{ z }},
+            mode: 'markers',
+            type: 'scatter3d',
+            marker: {
+              color: 'rgb(23, 190, 207)',
+              size: 2
+            }
+        },{
+            alphahull: 7,
+            opacity: 0.1,
+            type: 'mesh3d',
+            x: {{ x }},
+            y: {{ y }},
+            z: {{ z }},
+        }];
+
+        var layout = {
+            autosize: true,
+            height: 600,
+            scene: {
+                aspectratio: {
+                    x: 1,
+                    y: 1,
+                    z: 1
+                },
+                camera: {
+                    center: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    },
+                    eye: {
+                        x: 1.25,
+                        y: 1.25,
+                        z: 1.25
+                    },
+                    up: {
+                        x: 0,
+                        y: 0,
+                        z: 1
+                    }
+                },
+                xaxis: {
+                    type: 'linear',
+                    zeroline: false
+                },
+                yaxis: {
+                    type: 'linear',
+                    zeroline: false
+                },
+                zaxis: {
+                    type: 'linear',
+                    zeroline: false
+                }
+            },
+            width: 600
+        };
+
+        Plotly.newPlot('cluster', data, layout);
+
+    });
+    </script>
+
+    <h1>Question statistics (clustering)</h1>
+        <div id="cluster"></div>
+    <h1>Correlations between two disciplines</h1>
+    <form action="/statistics" method="GET">
+        <select class="form-control" style="width: 300px; display: inline-block" name="disc_first" required>
+            <option></option>
+            {% for item in disciplines %}
+                <option value="{{item.id}}" {% if item.id == disc_first %} selected {% endif %}>{{ item.name }}</option>
+            {% endfor %}
+        </select>
+        <select class="form-control" style="width: 300px; display: inline-block" name="disc_second" required>
+            <option></option>
+            {% for item in disciplines %}
+                <option value="{{item.id}}" {% if item.id == disc_second %} selected {% endif %}>{{ item.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-success" type="submit">Display</button>
+    </form>
+    <div id="correlation"></div>
+
+
+        <script>
+        {#console.log({{ x_first_cor }});#}
+        var l_x = {{ x_first_cor }}.length;
+        console.log(l_x);
+        var trace1 = {
+              x: {{ x_first_cor }},
+              y: {{ y_first_cor }},
+              mode: 'markers',
+              type: 'scatter',
+              marker: { size: 5 }
+            };
+
+            var trace2 = {
+              x: {{ x_second_cor }},
+              y: {{ y_second_cor }},
+              mode: 'markers',
+              type: 'scatter',
+              marker: { size: 5 }
+            };
+
+            var data = [ trace1, trace2 ];
+
+            var layout = {
+              xaxis: {
+                range: [ 0, {{ x_first_cor }}]
+              },
+              yaxis: {
+                range: [0, 2]
+              },
+              title:'Data Labels Hover'
+            };
+
+            Plotly.newPlot('correlation', data, layout);
+
+    </script>
+
+{% endblock content %}
