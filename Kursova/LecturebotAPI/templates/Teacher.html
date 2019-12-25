@@ -1,0 +1,90 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+label {
+  padding: 4px 4px 4px 0;
+  display: block;
+}
+input[type=text] {
+  width: 80%;
+  padding: 8px 8px;
+  margin: 0 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+    }
+input[type=submit] {
+  width: 80%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form class=""
+               action="{{url_for('forteacher')}}"
+               method="post">
+			   
+                {{ form.pass_number.label }}
+                {{ form.pass_number }}
+                {{ form.full_name.label }}
+                {{ form.full_name }}
+                {{ form.department.label }}
+                {{ form.department }}
+
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+                    <tr>
+                <th scope="col">Teacher table</th>
+            </tr>
+        <tr>
+            <th>Teacher name</th>
+            <th>Pass number</th>
+			<th>Related depatment</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for  Teacher in teachers %}
+            <tr >
+                <td> {{Teacher.full_name}} </td>
+                <td> {{Teacher.pass_number}} </td>
+                <td> {{Teacher.department}} </td>			
+                    <td><a href="/Teacher/edit/{{Teacher.pass_number}}" class="btn btn-success">Edit</a> </td>
+                    <td><a href="/Teacher/delete/{{Teacher.pass_number}}" class="btn btn-danger">Delete</a> </td>
+            </tr>
+        {% endfor %}
+
+                </tbody>
+            </table>
+         </div>
+     </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

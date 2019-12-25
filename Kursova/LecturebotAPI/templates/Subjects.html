@@ -1,0 +1,83 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+label {
+  padding: 4px 4px 4px 0;
+  display: block;
+}
+input[type=text], select {
+  width: 80%;
+  padding: 8px 8px;
+  margin: 0 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+    }
+input[type=submit] {
+  width: 80%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form class=""
+               action="{{url_for('forsubject')}}"
+               method="post">
+				{{ form.pass_num.label }}
+                {{ form.pass_num }}
+                {{ form.sbname.label }}
+                {{ form.sbname }}
+                {{ form.student_rating.label }}
+                {{ form.student_rating }}
+                {{ form.gradebook_number.label }}
+                {{ form.gradebook_number }}
+                {{ form.pass_number.label }}
+                {{ form.pass_number }}
+
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="table-responsive col-md-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Pass number</th>
+                        <th scope="col">Subject name</th>
+                         <th scope="col">Student rating</th>
+                        <th scope="col">Gradebook number</th>
+                        <th scope="col">Pass number</th>
+                    </tr>
+                </thead>
+                <tr>
+                {% for Subject in  subjects  %}
+                    <td> {{Subject.pass_num}} </td>
+                    <td> {{Subject.sbname}} </td>
+                    <td> {{Subject.student_rating}} </td>
+                    <td> {{Subject.gradebook_number}} </td>
+                    <td> {{Subject.pass_number}} </td>
+                    <td><a href="/Subjects/edit/{{Subject.pass_num}}" class="btn btn-success">Edit</a> </td>
+                    <td><a href="/Subjects/delete/{{Subject.pass_num}}" class="btn btn-danger">Delete</a> </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+         </div>
+     </div>
+</div>
+
+
+{% endblock %}
