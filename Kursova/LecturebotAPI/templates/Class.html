@@ -1,0 +1,54 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+label {
+  padding: 4px 4px 4px 0;
+  display: block;
+}
+input[type=text], select {
+  width: 80%;
+  padding: 8px 8px;
+  margin: 0 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+    }
+input[type=submit] {
+  width: 80%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form class=""
+               action="{{url_for('forclass')}}"
+               method="post">
+                {{ form.gradebook_number.label }}
+                {{ form.gradebook_number }}
+
+
+                <input type="submit" value="Submit">
+            </form>
+            <p>{{result}}</p>
+        </div>
+
+                </tbody>
+            </table>
+         </div>
+     </div>
+</div>
+
+
+{% endblock %}
