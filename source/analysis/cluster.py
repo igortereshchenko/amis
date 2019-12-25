@@ -2,6 +2,7 @@ import os
 import pickle
 import numpy as np
 from sklearn.cluster import KMeans
+from scipy import stats
 
 from source.dao import db
 from source.dao.orm.entities import *
@@ -27,8 +28,8 @@ def get_cluster_val(student_id=0, source_path="source/analysis/"):
 
     c = k_means.cluster_centers_
     #  good == 1/0, deside what number is good and what is bad
-    good_label = k_means.predict([c[-1]])[0]
-
+    good_label = k_means.predict([c[np.argmax(c[:, 1])]])[0]
+    print(good_label)
     # todo add bad and good labels
     c_x = [point[0] for point in c]
     c_y = [point[1] for point in c]
@@ -47,9 +48,10 @@ def get_cluster_val(student_id=0, source_path="source/analysis/"):
                                                                            StudentRecordBook.student_id_fk == student_id
                                                                            ).all()
         x = [[record.semester_mark, record.final_mark] for record in marks]
-        labels_student = k_means.predict(x)
-        return c_x, c_y, marks_good_cluster, marks_bad_cluster, x, "good student" if max(
-            labels_student) == good_label else "bad student"
+        labels_student = list(k_means.predict(x))
+        print(labels_student)
+        return c_x, c_y, marks_good_cluster, marks_bad_cluster, x, "good student" if stats.mode(
+            labels_student)[0][0] == good_label else "bad student"
 
     return c_x, c_y, labels, marks_good_cluster, marks_bad_cluster
 
