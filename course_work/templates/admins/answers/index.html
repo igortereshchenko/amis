@@ -1,0 +1,35 @@
+{% extends 'admin_main.html' %}
+
+{% block content %}
+
+<div id="content__page__header" class="d-flex justify-content-between align-items-center">
+    <H3>Answers</H3>
+    <meta http-equiv="refresh" content="3">
+</div>
+<div id="content__page__body">
+    <table class="table">
+        <thead>
+        <tr>
+            <th style="width: 30%">Question</th>
+            <th style="width: 15%">Question type</th>
+            <th style="width: 20%">Answer</th>
+            <th style="width: 25%">Student</th>
+            <th style="width: 15%">Student's faculty</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for answer in answers: %}
+        <tr>
+            <td>{{answer.Question.Questions}}</td>
+            <td>{{answer.Question.Type_question}}</td>
+            <td>{{answer.Answer_for_question}}</td>
+            <td>{{answer.Student_answer.UserFullName}}</td>
+            <td>{{answer.User_faculty}}</td>
+            <td class="d-flex justify-content-end">
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

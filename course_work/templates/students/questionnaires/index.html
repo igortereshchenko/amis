@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div id="content__page__header" class="d-flex justify-content-between align-items-center">
+    <h3>Questionnaire</h3>
+    <meta http-equiv="refresh" content="3">
+</div>
+<div id="content__page__body">
+    <table class="table">
+        <thead>
+        <tr>
+            <th style="width: 15%">Questionnaire id</th>
+            <th style="width: 30%">Question</th>
+            <th style="width: 25%">Questionnaire type</th>
+            <th style="width: 15%">Student's faculty</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for questionnaire in questionnaires: %}
+        <tr>
+            <td>{{ questionnaire.Questionnaire_id }}</td>
+            <td>{{ questionnaire.Question.Questions }}</td>
+            <td>{{ questionnaire.Question.Type_question }}</td>
+            <td>{{ questionnaire.User_faculty }}</td>
+            <td class="d-flex justify-content-end">
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
