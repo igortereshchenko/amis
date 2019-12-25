@@ -25,4 +25,4 @@ def clustering_axes():
     return reduced_features[:, 0], reduced_features[:, 1], reduced_features[:, 2]
 
 
-clustering_axes()
+# clustering_axes()

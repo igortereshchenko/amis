@@ -49,7 +49,7 @@ def create_test():
     data = dict(request.form)
     data.pop('csrf_token', None)
     if form.validate():
-        db.sqlalchemy_session.add(ormTest(test_name=data.get('test_name'), test_variant=int(data.get('test_variant'))))
+        db.sqlalchemy_session.add(ormTest(test_name=data.get('test_name')))
         db.sqlalchemy_session.commit()
     return redirect('/test')
 
@@ -63,7 +63,6 @@ def update_test(id):
         test = db.sqlalchemy_session.query(ormTest).filter(ormTest.test_id == id).first()
         if test:
             test.test_name = data.get('test_name', test.test_name)
-            test.test_variant = data.get('test_variant', test.test_variant)
             db.sqlalchemy_session.commit()
             return redirect('/test')
         else:
@@ -359,7 +358,7 @@ def statistics():
     y_second_cor = []
 
     if disc_first and disc_second:
-        corr_array = get_weights('neural_network_model/classify/synapses_short.json')[0]
+        corr_array = get_weights('neural_network_model/classify/synapses_temp.json')[0]
         y_first_cor = [item[int(disc_first)] for item in corr_array[:1000]]
         x_first_cor = [i for i in range(1, len(y_first_cor))]
 

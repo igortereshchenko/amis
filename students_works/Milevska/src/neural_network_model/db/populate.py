@@ -46,3 +46,5 @@ def populate_from_dataset():
                 print(e.args)
         if i > 600:
             break
+
+populate_from_dataset()

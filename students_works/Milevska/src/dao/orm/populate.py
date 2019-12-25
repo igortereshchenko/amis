@@ -1,6 +1,6 @@
 from dao.orm.model import *
 from dao.db import PostgresDB
-from neural_network_model.db.populate import populate_from_dataset
+# from neural_network_model.db.populate import populate_from_dataset
 
 db = PostgresDB()
 
@@ -111,4 +111,4 @@ user_2 = ormUser(
 session.add_all([user_1, user_2])
 session.commit()
 
-populate_from_dataset()
+# populate_from_dataset()
