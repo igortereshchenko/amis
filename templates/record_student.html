@@ -1,0 +1,89 @@
+{% extends "index_student.html" %}
+
+{% block menu %}
+    <li><a href="/record_book_index">Home</a></li>
+    <li class="active"><a href="/record_book">Record book</a></li>
+    <li><a href="/analysis">Analysis</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <div class="card-header">
+        <h3 class="mb-0">Search form</h3>
+    </div>
+    <form class="form"  method="post" >
+
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">{{record_form.semester.label}}</th>
+            <th scope="col">{{record_form.year.label}}</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td> {{record_form.semester(class_="form-control")}}</td>
+                <td> {{record_form.year(class_="form-control")}}</td>
+                <td> {{record_form.submit(class_="btn btn-success") }}</td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
+
+    <div class="card-header">
+        <h2>year: {{year}}</h2>
+        <h2>semester: {{semester}}</h2>
+    </div>
+    <hr>
+    <br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">professor name</th>
+            <th scope="col">professor surname</th>
+            <th scope="col">discipline name</th>
+            <th scope="col">semester point</th>
+            <th scope="col">final point</th>
+            <th scope="col">exam passed</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for record in records%}
+        <tr>
+            <td> {{record.professor_entity.name}}</td>
+            <td> {{record.professor_entity.surname}}</td>
+            <td> {{record.discipline_entity.discipline_name}}</td>
+            <td> {{record.semester_mark}}</td>
+            <td> {{record.final_mark}}</td>
+            <td> {{record.exam_passed}}</td>
+
+            <td>
+                <a href="/edit_record?professor_id={{record.professor_id_fk}}&discipline_id={{record.discipline_id_fk}}"
+                   title="edit button">
+                    <button type="button" class="btn btn-warning" name="btn_edit_user" >
+                        Edit
+                    </button>
+                </a>
+                <a href="/delete_record?discipline_id={{record.discipline_id_fk}}"
+                   title="delete button">
+                    <button type="button" class="btn btn-danger" name="btn_delete_user" >
+                        Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <a href="/new_record" title="new admin button">
+                    <button type="button" class="btn btn-success" name="btn_new_admin">New record</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--<script src="{{ url_for('static', filename='js/skill.js') }}"></script>-->
+
+{% endblock %}

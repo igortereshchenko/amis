@@ -1,0 +1,103 @@
+{% extends "index_student.html" %}
+
+{% block menu %}
+    <li><a href="/record_book_index">Home</a></li>
+    <li class="active"><a href="/record_book">Record book</a></li>
+    <li><a href="/analysis">Analysis</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="col-md-6 mx-auto">
+
+    <!-- form card login -->
+    <div class="card rounded-0">
+
+        <div class="card-header">
+            <h3 class="mb-0">{{form_name}}</h3>
+        </div>
+        <div class="card-body">
+
+            <form class="form"  action = "/{{action}}" method = post >
+                {{ form.hidden_tag() }}
+
+
+                <div class="form-group">
+                    {{ form.professor_chose.label }}
+                    {{ form.professor_chose(class_="form-control") }}
+
+                    {% if form.professor_chose.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.professor_chose.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{ form.discipline_chose.label }}
+                    {{ form.discipline_chose(class_="form-control") }}
+
+                    {% if form.discipline_chose.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.discipline_chose.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{ form.semester_mark.label }}
+                    {{ form.semester_mark(class_="form-control") }}
+
+                    {% if form.semester_mark.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.semester_mark.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{ form.final_mark.label }}
+                    {{ form.final_mark(class_="form-control") }}
+
+
+                    {% if form.final_mark.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.final_mark.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{ form.exam_passed.label }}
+                    {{ form.exam_passed(class_="form-control") }}
+
+
+                    {% if form.exam_passed.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.exam_passed.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+
+                {{ form.submit(class_="btn btn-success") }}
+            </form>
+        </div>
+        <!--/card-block-->
+    </div>
+    <!-- /form card login -->
+
+</div>
+
+</div>
+
+{% endblock %}
