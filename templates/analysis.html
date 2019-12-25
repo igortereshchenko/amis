@@ -1,0 +1,141 @@
+{% extends "index_student.html" %}
+
+{% block menu %}
+    <li><a href="/record_book_index">Home</a></li>
+    <li><a href="/record_book">Record book</a></li>
+    <li class="active"><a href="/analysis">Analysis</a></li>
+{% endblock %}
+
+
+{% block content %}
+
+    <section class="py-5 bg-image-full" style="background-image:
+    url('https://d2h0cx97tjks2p.cloudfront.net/blogs/wp-content/uploads/sites/2/2018/02/Introduction-to-Data-Mining-Cluster-Analysis-01.jpg');">
+        <div style="height: 300px;">
+        </div>
+    </section>
+
+    <div class="card-header">
+        <br><br>
+        <h1>1) Cluster analysis</h1>
+        <h2>Predicted cluster for all your marks (by majority voting):</h2>
+        <h3>Your cluster:   "{{predicted_cluster}}"</h3>
+    </div>
+
+    <div class="card-header">
+        <h2>Cluster for all data base (fitted k-means on all data):</h2>
+    </div>
+
+    <hr>
+
+    <div id="scatter_all_cluster">
+    </div>
+    <br><br><br>
+
+    <section class="py-5 bg-image-full" style="background-image:
+    url('https://www.linkedin.com/media-proxy/ext?w=1200&h=675&hash=b3rT4nYXTaXfwSGI4TdPEvsQ4K4%3D&ora=1%2CaFBCTXdkRmpGL2lvQUFBPQ%2CxAVta5g-0R6plxVUzgUv5K_PrkC9q0RIUJDPBy-kXC2q8tefZXDhec_dZLSiolQXfS8HlAI3eOqoQTTiE469LcLmY4Yx3A');">
+        <div style="height: 500px;">
+            <div class="card-header">
+
+            <h1>2) Regression analysis</h1>
+<!--            <hr>-->
+            <h3>MLP (multi layer perceptron)</h3>
+            <h3>prediction by inserting values:</h3>
+            <br><br><br>
+            <form class="form"  method="POST" >
+                {{ form.hidden_tag() }}
+                <table>
+                    <thead>
+                    <tr>
+                        <th scope="col">{{form.professor_chose.label}}</th>
+                        <th scope="col">{{form.discipline_chose.label}}</th>
+                        <th scope="col">{{form.semester_mark.label}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td> {{form.professor_chose(class_="form-control")}}</td>
+                            <td> {{form.discipline_chose(class_="form-control")}}</td>
+                            <td> {{form.semester_mark(class_="form-control")}}</td>
+                            <td> {{form.submit(class_="btn btn-success") }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% if form.professor_chose.errors%}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for message in form.professor_chose.errors %}
+                                    <div>{{ message }}</div>
+                                    {% endfor %}
+                                </div>
+                                {%endif%}
+                            </td>
+                            <td>
+                                {% if form.discipline_chose.errors%}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for message in form.discipline_chose.errors %}
+                                    <div>{{ message }}</div>
+                                    {% endfor %}
+                                </div>
+                                {%endif%}
+                            </td>
+                            <td>
+                                {% if form.semester_mark.errors%}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for message in form.semester_mark.errors %}
+                                    <div>{{ message }}</div>
+                                    {% endfor %}
+                                </div>
+                                {%endif%}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+
+            {% if predicted_mark%}
+                <h2>Predicted exam mark:</h2>
+                <h2>{{predicted_mark}}</h2>
+            {%endif%}
+            </div>
+            <p>.</p>
+        </div>
+    </section>`
+    <hr>
+
+    <script src="{{ url_for('static', filename='js/d3.v5.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plotly-latest.min.js') }}"></script>
+
+
+    <script type="text/javascript">
+        var layout_clus = {
+            autosize: false,
+            paper_bgcolor: "rgba(0,0,0,0)",
+            plot_bgcolor: "rgba(0,0,0,0)",
+            width: 1100,
+            height: 700,
+            xaxis: {
+                title: "semester mark",
+                range: [0, 63],
+                dtick: 2,
+              },
+            yaxis: {
+                title: "exam mark",
+                range: [0, 103],
+                dtick: 5,
+            },
+
+        };
+
+        var graphs = {{json | safe}};
+
+        if (graphs["scatter_all_cluster"]){
+            Plotly.plot("scatter_all_cluster",
+                    graphs["scatter_all_cluster"], layout_clus);
+                    }
+        else{
+            document.getElementById('scatter_all_cluster').innerHTML = '<p> no plots</p>';
+        }
+
+    </script>
+
+{% endblock %}
