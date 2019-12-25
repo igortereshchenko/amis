@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">user_id</th>
+            <th scope="col">user_login</th>
+            <th scope="col">user_pass</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for apply in apply%}
+        <tr>
+            <td> {{apply.user_id}}</td>
+            <td> {{apply.user_login}}</td>
+            <td> {{apply.user_pass}}</td>
+
+            <td>
+                <a href="/edit_apply?user_id={{apply.user_id}}" title="edit button">
+                    <button type="button" class="btn btn-warning" name="btn_edit_user"
+                            data-user_id="{{apply.user_login}}">Edit
+                    </button>
+                </a>
+                <a href="/delete_apply?user_id={{apply.user_id}}" title="delete button">
+                    <button type="button" class="btn btn-danger" name="btn_delete_user"
+                            data-user_id="{{apply.user_login}}">Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <a href="/new_apply" title="new user button">
+                    <button type="button" class="btn btn-success" name="btn_new_user">New teacher</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--<script src="{{ url_for('static', filename='js/skill.js') }}"></script>-->
+
+{% endblock %}

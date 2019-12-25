@@ -1,0 +1,37 @@
+{% extends "view.html" %}
+
+{% block content %}
+
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">group id_fk</th>
+            <th scope="col">teacher_id_fk</th>
+            <th scope="col">subject_name_fk</th>
+            <th scope="col">auditorium</th>
+            <th scope="col">times</th>
+            <th scope="col">days</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for scedule in scedules%}
+        <tr>
+            <td> {{scedule.group_id_fk}}</td>
+            <td> {{scedule.teach_id_fk}}</td>
+            <td> {{scedule.subj_name_fk}}</td>
+            <td> {{scedule.auditorium}}</td>
+            <td> {{scedule.days}}</td>
+            <td> {{scedule.times}}</td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!--<script src="{{ url_for('static', filename='js/skill.js') }}"></script>-->
+
+{% endblock %}

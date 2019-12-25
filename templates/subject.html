@@ -8,7 +8,7 @@
         <thead>
         <tr>
             <th scope="col">subject name</th>
-            <th scope="col">subject faculty</th>
+            <th scope="col">subj_hours</th>
         </tr>
         </thead>
         <tbody>
@@ -19,13 +19,13 @@
             <td> {{subject.subj_hours}}</td>
 
             <td>
-                <a href="/edit_subject?subj_name={{subject.subj_name}}&subj_faculty={{subject.subj_faculty}}&subj_hours={{subject.subj_hours}}"
+                <a href="/edit_subject?subj_name={{subject.subj_name}}&subj_hours={{subject.subj_hours}}"
                    title="edit button">
                     <button type="button" class="btn btn-warning" name="btn_edit_subject"
                             data-user_id="{{subject.subj_name}}">Edit
                     </button>
                 </a>
-                <a href="/delete_subject?subj_name={{subject.subj_name}}&subj_faculty={{subject.subj_faculty}}&subj_hours={{subject.subj_hours}}"
+                <a href="/delete_subject?subj_name={{subject.subj_name}}&subj_hours={{subject.subj_hours}}"
                    title="delete button">
                     <button type="button" class="btn btn-danger" name="btn_delete_subject"
                             data-user_id="{{subject.subj_name}}">Delete

@@ -4,9 +4,11 @@ from sqlalchemy import func
 from dao.orm.entities import *
 from dao.db import PostgresDb
 from datetime import date
+from forms.apply_form import ApplyForm
 from forms.teacher_form import TeacherForm
 from forms.group_form import GroupForm
 from forms.subject_form import SubjectForm
+from forms.scedule_form import SceduleForm
 from forms.car_form import CarForm
 from forms.univer_form import UniverForm
 from forms.work_form import Work1Form
@@ -18,10 +20,27 @@ import plotly.graph_objs as go
 app = Flask(__name__)
 app.secret_key = 'development key'
 
+class Login:
+    name = ""
+    password = ""
+    isLogged = False
+    isAdmin = False
+
+    def Login(self,name,password, isAdmin= False):
+        self.name = name
+        self.password = password
+        self.isLogged = True
+        self.isAdmin = isAdmin
+
+
+log = Login()
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
-    return render_template('index.html')
+    if log.isLogged:
+        return render_template('index.html')
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
@@ -48,17 +67,17 @@ def dashboard():
         data[label] = [pie]
         pie_labels.append(label)
 
-    points = db.sqlalchemy_session.query(Car.model, Car.manuf).distinct(
-        Car.model, Car.manuf).filter(Car.model != '').all()
+    # points = db.sqlalchemy_session.query(Car.model, Car.manuf).distinct(
+    #     Car.model, Car.manuf).filter(Car.model != '').all()
 
-    semester, final = zip(*points)
-    bar = go.Scatter(
-        x=semester,
-        y=final,
-        mode='markers'
-    )
+    # semester, final = zip(*points)
+    # bar = go.Scatter(
+    #     x=semester,
+    #     y=final,
+    #     mode='markers'
+    # )
 
-    data["bar"].append(bar)
+    # data["bar"].append(bar)
     json_data = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template('dashboard.html', json=json_data, pie_labels=pie_labels, group_form=group_form)
@@ -79,20 +98,25 @@ def new_teacher():
 
     if request.method == 'POST':
         if not form.validate():
-            return render_template('teacher_form.html', form=form, form_name="New teacher", action="new_teacher")
+            return render_template('teacher_form.html', form=form, action="new_teacher")
         else:
-
+            # db = PostgresDb()
             teacher_obj = Teacher(
                 teach_name=form.teacher_name.data,
                 teach_faculty=form.teacher_faculty.data)
 
+            # check = db.sqlalchemy_session.query(Teacher).filter(Teacher.teach_name == teacher_obj.teach_name,
+            #                                                     Teacher.teach_faculty == teacher_obj.teach_faculty)
+            # if check:
+            #     TeacherForm.errors = ["Entity already exists"]
+            #     return render_template('teacher_form.html', form=form, action="new_teacher")
             db = PostgresDb()
             db.sqlalchemy_session.add(teacher_obj)
             db.sqlalchemy_session.commit()
 
             return redirect(url_for('index_teacher'))
 
-    return render_template('teacher_form.html', form=form, form_name="New teacher", action="new_teacher")
+    return render_template('teacher_form.html', form=form, action="new_teacher")
 
 
 @app.route('/edit_teacher', methods=['GET', 'POST'])
@@ -168,10 +192,15 @@ def new_group():
         if not form.validate():
             return render_template('group_form.html', form=form, form_name="New group", action="new_group")
         else:
+            # db = PostgresDb()
             group_obj = Group(
                 group_faculty=form.group_faculty.data,
                 group_name=form.group_name.data)
-
+            # check = db.sqlalchemy_session.query(Group).filter(Group.group_name == group_obj.group_name,
+            #                                                     Group.group_faculty == group_obj.group_faculty)
+            # if check:
+            #     TeacherForm.errors = ["Entity already exists"]
+            #     return render_template('group_form.html', form=form, action="new_group")
             db = PostgresDb()
             db.sqlalchemy_session.add(group_obj)
             db.sqlalchemy_session.commit()
@@ -255,10 +284,14 @@ def new_subject():
         else:
             subject_obj = Subject(
                 subj_name=form.subject_name.data,
-                subj_faculty=form.subject_faculty.data,
                 subj_hours=form.subject_hours.data)
-
             db = PostgresDb()
+
+            s = db.sqlalchemy_session.query(Subject).filter(Subject.subj_name == subject_obj.subj_name).all()
+            if s:
+                form.subject_name.errors = ["Subject already exists"]
+                return render_template('subject_form.html', form=form, form_name="New subject", action="new_subject")
+
             db.sqlalchemy_session.add(subject_obj)
             db.sqlalchemy_session.commit()
 
@@ -273,17 +306,14 @@ def edit_subject():
 
     if request.method == 'GET':
 
-        subject_faculty, subject_name = request.args.get('subj_faculty'), \
-                                                                     request.args.get('subj_name')
+        subject_name = request.args.get('subj_name')
         db = PostgresDb()
 
         # -------------------------------------------------------------------- filter for "and" google
         subject = db.sqlalchemy_session.query(Subject).filter(
-            Subject.subj_faculty == subject_faculty,
             Subject.subj_name == subject_name).one()
 
         # fill form and send to discipline
-        form.subject_faculty.data = subject.subj_faculty
         form.subject_name.data = subject.subj_name
         form.subject_hours.data = subject.subj_hours
 
@@ -298,11 +328,9 @@ def edit_subject():
             db = PostgresDb()
             # find discipline
             subject = db.sqlalchemy_session.query(Subject).filter(
-                Subject.subj_faculty == form.subject_faculty.data,
                 Subject.subj_name == form.subject_name.data).one()
 
             # update fields from form data
-            subject.subj_faculty = form.subject_faculty.data
             subject.subj_name = form.subject_name.data
             subject.subj_hours = form.subject_hours.data
 
@@ -313,13 +341,11 @@ def edit_subject():
 
 @app.route('/delete_subject')
 def delete_subject():
-    subject_faculty, subject_name = request.args.get('subj_faculty'), \
-                                                                 request.args.get('subj_name')
+    subject_name = request.args.get('subj_name')
 
     db = PostgresDb()
 
     result = db.sqlalchemy_session.query(Subject).filter(
-        Subject.subj_faculty == subject_faculty,
         Subject.subj_name == subject_name).one()
 
     db.sqlalchemy_session.delete(result)
@@ -327,223 +353,217 @@ def delete_subject():
 
     return redirect(url_for('index_subject'))
 
+# @app.route('/view_scedule', methods=['GET', 'POST'])
+# def view_scedule():
+#     form = ViewForm()
+#     if request.method == 'POST':
+#         if not form.validate():
+#             return render_template('view_form.html', form=form, form_name="View scedule",
+#                                    action="view_scedule")
+#         else:
+#             # db = PostgresDb()
+#             scedule_obj1 = Scedule(group_id_fk=form.group_id_fk.data)
+#         db = PostgresDb()
+#
+#         scedule1 = db.sqlalchemy_session.query(Scedule).filter(Scedule.group_id_fk == scedule_obj1.group_id_fk)
+#
+#         return render_template('view_scedule.html', scedules=scedule1)
+#         db.sqlalchemy_session.add(scedule_obj)
+#         db.sqlalchemy_session.commit()
+#
+#     return redirect(url_for('index_scedule'))
 
-@app.route('/inserts', methods=['GET'])
-def index_car():
+
+@app.route('/view', methods=['GET'])
+def view_scedule():
     db = PostgresDb()
 
-    car = db.sqlalchemy_session.query(Car).all()
+    scedule = db.sqlalchemy_session.query(Scedule).all()
 
-    return render_template('car.html', cars=car)
+    return render_template('view_form.html', scedules=scedule)
 
 
-@app.route('/get_car', methods=['GET', 'POST'])
-def new_car():
-    form = CarForm()
+@app.route('/scedule', methods=['GET'])
+def index_scedule():
+    db = PostgresDb()
+
+    scedule = db.sqlalchemy_session.query(Scedule).all()
+
+    return render_template('scedule.html', scedules=scedule)
+
+
+@app.route('/new_scedule', methods=['GET', 'POST'])
+def new_scedule():
+    form = SceduleForm()
+
     if request.method == 'POST':
         if not form.validate():
-            return render_template('car_form.html', form=form, form_name="New car",
-                                   action="get_car")
+            return render_template('scedule_form.html', form=form, form_name="New scedule",
+                                   action="new_scedule")
         else:
-            car_obj = Car(
-                model=form.model.data,
-                color=form.color.data,
-                numb=form.numb.data,
-                manuf=form.manuf.data,
-                teacher_id_fk=form.teacher_id_fk.data)
+            scedule_obj = Scedule(
+                group_id_fk=form.group_id_fk.data,
+                teach_id_fk=form.teach_id_fk.data,
+                subj_name_fk=form.subj_name_fk.data,
+                auditorium=form.auditorium.data,
+                times=form.times.data,
+                days=form.days.data)
+            db = PostgresDb()
+            check = db.sqlalchemy_session.query(Scedule).filter(Scedule.group_id_fk == scedule_obj.group_id_fk,
+                                                                Scedule.times == scedule_obj.times,
+                                                                Scedule.days == scedule_obj.days).all()
+            if check:
+                form.group_id_fk.errors = ["Entity already exists"]
+                return render_template('scedule_form.html', form=form, action="new_scedule")
+            d = db.sqlalchemy_session.query(Group).filter(Group.group_id == scedule_obj.group_id_fk).all()
+            if not d:
+                form.group_id_fk.errors = ["No such group"]
+                return render_template('scedule_form.html', form=form, form_name="New scedule", action="new_scedule")
+            db.sqlalchemy_session.add(scedule_obj)
+            db.sqlalchemy_session.commit()
 
-        db = PostgresDb()
-        db.sqlalchemy_session.add(car_obj)
-        db.sqlalchemy_session.commit()
-        return redirect(url_for('index_car'))
-    return render_template('car_form.html', form=form, form_name="New car", action="new_car")
+            return redirect(url_for('index_scedule'))
+
+    return render_template('scedule_form.html', form=form, form_name="New scedule", action="new_scedule")
 
 
-@app.route('/map/<car_model>', methods=['GET', 'POST'])
-def edit_car(car_model):
-    form = CarForm()
+@app.route('/edit_scedule', methods=['GET', 'POST'])
+def edit_scedule():
+    form = SubjectForm()
 
     if request.method == 'GET':
-
-        model = request.args.get('model')
-        model = car_model
+        times, days, group_id_fk = request.args.get('times'), request.args.get('days'), request.args.get('group_id_fk')
         db = PostgresDb()
 
         # -------------------------------------------------------------------- filter for "and" google
-        res = db.sqlalchemy_session.query(Car).filter(Car.model == model)
-        car = res.first()
-        # fill form and send to discipline
-        form.model.data = car.model
-        form.color.data = car.color
-        form.numb.data = car.numb
-        form.manuf.data = car.manuf
-        form.teacher_id_fk.data = car.teacher_id_fk
-        form.old_model.data = car.model
+        scedule = db.sqlalchemy_session.query(Scedule).filter(
+            Scedule.times == times,
+            Scedule.days == days,
+            Scedule.days == days,
+            Scedule.group_id_fk).one()
 
-        return render_template('car_form.html', form=form, form_name="Edit car", action="edit_car")
+        # fill form and send to discipline
+        form.group_id_fk.data = scedule.group_id_fk
+        form.teach_id_fk.data = scedule.teach_id_fk
+        form.subj_name_fk.data = scedule.subj_name_fk
+        form.auditorium.data = scedule.auditorium
+        form.times.data = scedule.times
+        form.days.data = scedule.days
+
+        return render_template('scedule_form.html', form=form, form_name="Edit scedule", action="edit_scedule")
 
     else:
+
         if not form.validate():
-            return render_template('car_form.html', form=form, form_name="Edit car", action="edit_car")
+            return render_template('scedule_form.html', form=form, form_name="Edit scedule",
+                                   action="edit_scedule")
         else:
             db = PostgresDb()
             # find discipline
-            car = db.sqlalchemy_session.query(Car).filter(
-                Car.model == form.old_model.data).one()
+            scedule = db.sqlalchemy_session.query(Scedule).filter(
+                Scedule.times == form.times.data,
+                Scedule.days == form.days.data,
+                Scedule.group_id_fk == form.group_id_fk. data).one()
 
             # update fields from form data
-            car.model = form.model.data
-            car.color = form.color.data
-            car.numb = form.numb.data
-            car.manuf = form.manuf.data
-            car.teacher_id_fk = form.teacher_id_fk.data
-
+            scedule.group_id_fk = form.group_if_fk.data
+            scedule.teach_id_fk = form.teach_id_fk.data
+            scedule.subj_name_fk = form.subj_name_fk.data
+            scedule.auditorium = form.auditorium.data
+            scedule.times = form.times.data
+            scedule.day = form.days.data
             db.sqlalchemy_session.commit()
 
-            return redirect(url_for('index_car'))
+            return redirect(url_for('index_scedule'))
 
 
-@app.route('/univer', methods=['GET'])
-def index_univer():
-    db = PostgresDb()
-
-    univer = db.sqlalchemy_session.query(Univer).all()
-
-    return render_template('univer.html', univers=univer)
-
-
-@app.route('/new_univer', methods=['GET'])
-def new_univer():
-    univer_obj = Univer(
-        name="KPI",
-        addr="Polytech Street",
-        counter=1000,
-        teacher_id_fk=2
-    )
+@app.route('/delete_scedule')
+def delete_scedule():
+    times, days, group_id_fk = request.args.get('times'), request.args.get('days'), request.args.get('group_id_fk')
 
     db = PostgresDb()
-    db.sqlalchemy_session.add(univer_obj)
+
+    result = db.sqlalchemy_session.query(Scedule).filter(
+        Scedule.times == times,
+        Scedule.days == days,
+        Scedule.group_id_fk == group_id_fk).one()
+
+    db.sqlalchemy_session.delete(result)
     db.sqlalchemy_session.commit()
-    return redirect(url_for('index_univer'))
+
+    return redirect(url_for('index_scedule'))
 
 
-@app.route('/edit_univer', methods=['GET', 'POST'])
-def edit_univer():
-    form = UniverForm()
-
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = ApplyForm()
     if request.method == 'GET':
+        return render_template('login_form.html', form=form, form_name="login", action="login")
 
-        name = request.args.get('name')
-        db = PostgresDb()
-
-        # -------------------------------------------------------------------- filter for "and" google
-        univer = db.sqlalchemy_session.query(Univer).filter(
-            Univer.name == name).one()
-
-        # fill form and send to discipline
-        form.name.data = univer.name
-        form.addr.data = univer.addr
-        form.counter.data = univer.counter
-        form.teacher_id_fk.data = univer.teacher_id_fk
-        form.old_name.data = univer.name
-
-        return render_template('univer_form.html', form=form, form_name="Edit univer", action="edit_univer")
-
-    else:
+    if request.method == 'POST':
         if not form.validate():
-            return render_template('univer_form.html', form=form, form_name="Edit univer", action="edit_univer")
-        else:
-            db = PostgresDb()
-            # find discipline
-            univer = db.sqlalchemy_session.query(Univer).filter(
-                Univer.name == form.old_name.data).one()
+            return render_template('login_form.html', form=form, form_name="login", action="login")
 
-            # update fields from form data
-            univer.name = form.name.data
-            univer.addr = form.addr.data
-            univer.counter = form.counter.data
-            univer.teacher_id_fk = form.teacher_id_fk.data
-
-            db.sqlalchemy_session.commit()
-
-            return redirect(url_for('index_univer'))
-
-
-@app.route('/show', methods=['GET'])
-def index_work():
-    db = PostgresDb()
-
-    work = db.sqlalchemy_session.query(Work1).all()
-
-    return render_template('work.html', works=work)
-
-
-@app.route('/new_work', methods=['GET'])
-def new_work():
-    work_obj = Work1(
-        name="AAA",
-        company="Epam",
-        salary=20000,
-        subj_name_fk = "MATH",
-        subj_faculty_fk = "AM",
-        open_date = '2019-01-01'
-    )
-
-    db = PostgresDb()
-    db.sqlalchemy_session.add(work_obj)
-    db.sqlalchemy_session.commit()
-    return redirect(url_for('index_work'))
-
-@app.route('/edit_work', methods=['GET', 'POST'])
-def edit_work():
-    form = Work1Form()
-
-    if request.method == 'GET':
-
-        subj_faculty_fk, subj_name_fk = request.args.get('subj_faculty_fk'), \
-                                        request.args.get('subj_name_fk')
+        # print(form.user_login.data)
+        # print(form.user_pass.data)
         db = PostgresDb()
-
-        # -------------------------------------------------------------------- filter for "and" google
-        work = db.sqlalchemy_session.query(Work1).filter(
-            Work1.subj_faculty_fk == subj_faculty_fk,
-            Work1.subj_name_fk == subj_name_fk).one()
-
-        # fill form and send to discipline
-        form.name.data = work.name
-        form.company.data = work.company
-        form.salary.data = work.salary
-        form.open_date.data = work.open_date
-        form.subj_name_fk.data = work.subj_name_fk
-        form.subj_faculty_fk.data = work.subj_faculty_fk
-        form.old_subj_faculty_fk.data = work.subj_faculty_fk
-        form.old_subj_name_fk.data = work.subj_name_fk
-
-        return render_template('work_form.html', form=form, form_name="Edit work", action="edit_work")
-
-    else:
-        if not form.validate():
-            return render_template('work_form.html', form=form, form_name="Edit work", action="edit_work")
+        apply = db.sqlalchemy_session.query(Apply).filter(Apply.user_email == form.user_login.data, Apply.user_pass == form.user_pass.data).all()
+        if apply:
+            if form.user_login.data == 'Admin@gmail.com' and form.user_pass.data == 'admin1111':
+                log.Login(form.user_login.data, form.user_pass.data, isAdmin=True)
+                return redirect(url_for('dashboard'))
+            else:
+                log.Login(form.user_login.data, form.user_pass.data)
+                return redirect(url_for('view_scedule'))
         else:
+            return render_template('login_form.html', form=form, form_name="login", action="login")
+
+
+def findClass(input, data, classes):
+    y = []
+    for d in data:
+        sum = 0.0
+        for i in range(len(input)):
+            sum += (input[i] - d[i]) ** 2
+        y.append(math.exp(-sum) / 0.09)
+    return classes[y.index(max(y))]
+
+@app.route('/analysis', methods=['GET', 'POST'])
+def analysis():
+    a = db.sqlalchemy_session.query(Scedule).all()
+    teacher = [[11], [12]]
+    classes = ['A', 'B']
+    table = {}
+    audits = {}
+    for s in a:
+        audits[s.auditorium] = 0
+    for s in a:
+        audits[s.auditorium] +=1
+    for audit in audits:
+        table[audit] = findClass([audits[audit]],teacher,classes)
+
+    return render_template('analysis.html', table = table)
+
+@app.route('/new_apply', methods=['GET', 'POST'])
+def new_apply():
+    form = ApplyForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('apply_form.html', form=form, form_name="New Apply", action="new_apply")
+        else:
+
+            apply_obj = Apply(
+                user_email=form.user_login.data,
+                user_pass=form.user_pass.data)
+
             db = PostgresDb()
-            # find discipline
-            work = db.sqlalchemy_session.query(Work1).filter(
-                Work1.subj_faculty_fk == form.old_subj_faculty_fk.data,
-                Work1.subj_name_fk == form.old_subj_name_fk.data).one()
-
-            # update fields from form data
-            work.name = form.name.data
-            work.company = form.company.data
-            work.salary = form.salary.data
-            work.open_date = form.open_date.data
-            work.subj_name_fk = form.subj_name_fk.data
-            work.subj_faculty_fk = form.subj_faculty_fk.data
-
+            db.sqlalchemy_session.add(apply_obj)
             db.sqlalchemy_session.commit()
+            return redirect(url_for('new_scedule'))
 
-            return redirect(url_for('index_univer'))
-# END DISCIPLINE ORIENTED QUERIES -----------------------------------------------------------------------------------
+    return render_template('apply_form.html', form=form, form_name="New Apply", action="new_apply")
 
 
 if __name__ == '__main__':
+    db = PostgresDb()
     app.run(debug=True)

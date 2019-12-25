@@ -2,97 +2,66 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, Boolean, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 import datetime
-
-
+import math
 
 Base = declarative_base()
 
 
 class Group(Base):
-    __tablename__ = 'Groups'
+    __tablename__ = 'Groups1'
 
     group_id = Column(Integer, primary_key=True)
     group_faculty = Column(String(255), nullable=False)
     group_name = Column(String(255), nullable=False)
 
-    group_record = relationship("Scedule")
+    scedule_entity = relationship("Scedule", cascade = "delete")
+
+
+
+class Apply(Base):
+    __tablename__ = 'Apply'
+
+    user_id = Column(Integer, primary_key=True)
+    user_email = Column(String(255), nullable=False, unique=True)
+    user_pass = Column(String(255), nullable=False)
 
 
 class Teacher(Base):
-    __tablename__ = 'Teachers'
+    __tablename__ = 'Teachers1'
 
     teacher_id = Column(Integer, primary_key=True)
     teach_name = Column(String(255), nullable=False)
     teach_faculty = Column(String(255), nullable=False)
 
+    scedule_entity = relationship("Scedule", cascade = "delete")
+
+
 
 class Subject(Base):
-    __tablename__ = 'Subjects'
+    __tablename__ = 'Subjects1'
 
-    subj_faculty = Column(String(255),primary_key=True)
     subj_name = Column(String(255), primary_key=True)
     subj_hours = Column(Integer, nullable=True)
 
+    scedule_entity = relationship("Scedule", cascade = "delete")
 
-class Student(Base):
-    __tablename__ = 'Student'
-
-    stud_name = Column(String(255),primary_key=True)
-    gender = Column(Boolean, nullable=True)
-    counter = Column(Integer, nullable=True)
-    group_ids_fk = Column(Integer, nullable=True)
 
 
 class Scedule(Base):
-    __tablename__ = 'Scedule'
+    __tablename__ = 'Schedule1'
 
-    group_id_fk = Column(Integer, ForeignKey('Groups.group_id'), primary_key=True)
-    subj_name_fk = Column(String(255), primary_key=True)
-    subj_faculty_fk = Column(String(255), primary_key=True)
-    teach_id_fk = Column(Integer, ForeignKey('Teachers.teacher_id'), primary_key=True)
-    __table_args__ = (ForeignKeyConstraint([subj_name_fk, subj_faculty_fk],
-                                           [Subject.subj_name, Subject.subj_faculty]), {})
+    group_id_fk = Column(Integer, primary_key=True)
+    subj_name_fk = Column(String(255), nullable=True)
+    teach_id_fk = Column(Integer, nullable=True)
+    times = Column(Date, primary_key=True)
+    days = Column(String, primary_key = True)
+    auditorium = Column(String(255), nullable=True)
 
-    subject_entity = relationship("Subject")
-    teacher_entity = relationship("Teacher")
-
-
-class Univer(Base):
-    __tablename__ = 'Univer'
-
-    name = Column(String(255),primary_key=True)
-    addr = Column(String(255), nullable=True)
-    counter = Column(Integer, nullable=True)
-    teacher_id_fk = Column(Integer, ForeignKey('Teachers.teacher_id'), nullable=True)
-
-    teacher_entity = relationship("Teacher")
+    __table_args__ = (ForeignKeyConstraint([group_id_fk], [Group.group_id]), ForeignKeyConstraint([subj_name_fk], [Subject.subj_name]), ForeignKeyConstraint([teach_id_fk], [Teacher.teacher_id]), {})
 
 
-class Car(Base):
-    __tablename__ = 'Car'
-
-    model = Column(String(255), primary_key=True)
-    color = Column(String(255), nullable=True)
-    numb = Column(Integer, nullable=True)
-    manuf = Column(Integer, nullable=True)
-    teacher_id_fk = Column(Integer, ForeignKey('Teachers.teacher_id'), nullable=True)
-
-    teacher_entity = relationship("Teacher")
 
 
-class Work1(Base):
-    __tablename__ = 'Work1'
-
-    name = Column(String(255), nullable=True)
-    company = Column(String(255), nullable=True)
-    subj_name_fk = Column(String(255), primary_key=True)
-    subj_faculty_fk = Column(String(255), primary_key=True)
-    salary = Column(Integer, nullable=True)
-    open_date = Column(Date, nullable=True)
-    __table_args__ = (ForeignKeyConstraint([subj_name_fk, subj_faculty_fk],
-                                           [Subject.subj_name, Subject.subj_faculty]), {})
-
-    subject_entity = relationship("Subject")
 
 
 if __name__ == '__main__':
@@ -100,8 +69,12 @@ if __name__ == '__main__':
 
     db = PostgresDb()
     # simple query test
-    q1 = db.sqlalchemy_session.query(Subject).all()
-    q2 = db.sqlalchemy_session.query(Scedule).all()
+    # q1 = db.sqlalchemy_session.query(Subject).all()
+    # q2 = db.sqlalchemy_session.query(Scedule).all()
 
-    a = db.sqlalchemy_session.query(Group).join(Scedule).join(Subject).join(Teacher).all()
-    print()
+
+
+    for key in table:
+        print(str(key) + " is class " + table[key])
+
+

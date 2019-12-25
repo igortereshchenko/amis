@@ -1,0 +1,66 @@
+<!--https://www.codeply.com/go/nhbdi2FkJm-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Workshop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<body>
+<div class="col-md-6 mx-auto">
+
+    <!-- form card login -->
+    <div class="card rounded-0">
+
+        <div class="card-header">
+            <h3 class="mb-0">{{form_name}}</h3>
+        </div>
+        <div class="card-body">
+
+            <form class="form"  action = "/{{action}}" method = post >
+                {{ form.hidden_tag() }}
+
+
+                <div class="form-apply">
+                    {{ form.user_login.label }}
+                    {{ form.user_login(class_="form-control") }}
+
+                    {% if form.user_login.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.user_login.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-apply">
+                    {{ form.user_pass.label }}
+                    {{ form.user_pass(class_="form-control") }}
+
+                    {% if form.user_pass.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.user_pass.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                {{ form.submit(class_="btn btn-success") }}
+            </form>
+        </div>
+        <!--/card-block-->
+    </div>
+    <!-- /form card login -->
+
+</div>
+
+</div>
+</body>
+</html>
+
+

@@ -61,6 +61,3 @@ class PostgresDb(object):
 
 if __name__ == "__main__":
     db = PostgresDb()
-    db = PostgresDb()
-    db = PostgresDb()
-    db = PostgresDb()

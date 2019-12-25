@@ -16,31 +16,29 @@
         <div class="card-body">
 
             <form class="form"  action = "/{{action}}" method = post >
-
                 {{ form.hidden_tag() }}
 
 
-                <div class="form-group">
-                    {{ form.subject_name.label }}
-                    {{ form.subject_name(class_="form-control") }}
+                <div class="form-apply">
+                    {{ form.user_login.label }}
+                    {{ form.user_login(class_="form-control") }}
 
-                    {% if form.subject_name.errors%}
+                    {% if form.user_login.errors%}
                     <div class="alert alert-danger" role="alert">
-                        {% for message in form.subject_name.errors %}
+                        {% for message in form.user_login.errors %}
                         <div>{{ message }}</div>
                         {% endfor %}
                     </div>
                     {%endif%}
                 </div>
 
+                <div class="form-apply">
+                    {{ form.user_pass.label }}
+                    {{ form.user_pass(class_="form-control") }}
 
-                <div class="form-group">
-                    {{ form.subject_hours.label }}
-                    {{ form.subject_hours(class_="form-control") }}
-
-                    {% if form.subject_hours.errors%}
+                    {% if form.user_pass.errors%}
                     <div class="alert alert-danger" role="alert">
-                        {% for message in form.subject_hours.errors %}
+                        {% for message in form.user_pass.errors %}
                         <div>{{ message }}</div>
                         {% endfor %}
                     </div>
@@ -55,6 +53,10 @@
     <!-- /form card login -->
 
 </div>
+
+</div>
+
+
 
 
 {% endblock %}

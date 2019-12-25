@@ -1,9 +1,0 @@
-CREATE TABLE "Car" (
-    model VARCHAR(255),
-    color VARCHAR(255),
-    manuf INT,
-    numb INT,
-    teacher_id_fk INT,
-    PRIMARY KEY (model),
-    FOREIGN KEY (teacher_id_fk) REFERENCES "Teachers"(teacher_id));
-    
