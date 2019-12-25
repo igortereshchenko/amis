@@ -1,0 +1,5 @@
+username = 'uwxdryzvuycyoe'
+password = '32a2c33d4d87fa1536831f466fac6f3ec13dda0ce5a5e35d7b724e127003f99c'
+host = 'ec2-54-246-121-32.eu-west-1.compute.amazonaws.com'
+port = '5432'
+database = 'dan804fr2cqh4m'

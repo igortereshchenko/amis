@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>No such drugs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <label class="navbar-brand">{{username}}</label>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a href="{{url_for('patient')}}" class="btn btn-info">Back to previous page</a>
+            <a href="{{url_for('logout')}}" class="btn btn-danger">Log out</a>
+        </div>
+    </div>
+</nav>
+
+<h2>We are sorry, but there are no drugs with your symptoms and contraindications</h2>
+</body>
+</html>
