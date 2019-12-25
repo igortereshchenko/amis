@@ -63,31 +63,32 @@ def populate(path=''):
                 Discipline.discipline_university == uni_ch,
                 Discipline.discipline_faculty == faculty_ch).all()]
 
-            students.append(Student(
+            session.add(Student(
                 student_university=uni_ch,
                 student_faculty=faculty_ch,
                 student_group=np.random.choice(group, 1)[0],
                 name=name[0],
                 surname=name[1],
-                login=name[0],
+                login=name[0] + str(np.random.randint(0, 1000)),
                 password=name[0],
                 student_date_expelled=datetime.date.today(),
             ))
-
-            records.append(StudentRecordBook(
+            session.commit()
+            session.add(StudentRecordBook(
                 student_id_fk=id,
-                discipline_id_fk=np.random.choice(disciplines, 1)[0],
-                professor_id_fk=np.random.choice(professors, 1)[0],
+                discipline_id_fk=int(np.random.choice(disciplines, 1)[0]),
+                professor_id_fk=int(np.random.choice(professors, 1)[0]),
                 semester_mark=row["Semester points"],
                 final_mark=row["Exam points"],
                 exam_passed=datetime.date.today(),
             ))
+            session.commit()
 
     # insert into database
-    session.add_all(students)
+    # session.add_all(students)
     # session.commit()
-    session.add_all(records)
-    session.commit()
+    # session.add_all(records)
+    # session.commit()
 
 
 if __name__ == '__main__':
