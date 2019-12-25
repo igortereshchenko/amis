@@ -1,0 +1,30 @@
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
+
+<h1>{{message}}</h1>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Information</th>
+            <th scope="col">Exercise</th>
+            <th scope="col">Repeat</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in cmpl%}
+        <tr>
+            <td> {{user.information}}</td>
+            <td> {{user.exercise_name}}</td>
+            <td> {{user.repeater}}</td>
+
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+<p><a class="btn btn-success" href="/update?user={{user}}&complex={{cmpl_name}}&status=done&weight={{weight}}&height={{height}}">done</a></p>
+<p><a class="btn btn-success" href="/update?user={{user}}&complex={{cmpl_name}}&status=reject&weight={{weight}}&height={{height}}">reject</a></p>
+{% endblock %}

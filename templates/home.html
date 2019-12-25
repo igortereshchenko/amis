@@ -1,0 +1,52 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Home page{% endblock %}
+
+{% block content %}
+<h1><font color="red">{{message}}</font></h1>
+<div class="col-md-6 mx-auto">
+    <div class="card rounded-0">
+
+        <div class="card-header">
+            <h3 class="mb-0">Login</h3>
+        </div>
+        <div class="card-body">
+            <form class="form"  method = post >
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{form.name.label}}
+                    {{ form.name(class_="form-control") }}
+
+                    {% if form.name.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.name.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                <div class="form-group">
+                    {{form.password.label}}
+                    {{ form.password(class_="form-control") }}
+
+                    {% if form.password.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.password.errors %}
+                        <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                    {%endif%}
+                </div>
+
+                {{ form.submit(class_="btn btn-success") }}
+                <a class="btn btn-success" href="/registration">Do not have an acc?</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+

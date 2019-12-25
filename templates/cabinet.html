@@ -1,0 +1,12 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}User page{% endblock %}
+
+{% block content %}
+<h1>Welcome to your personal cabinet! </h1>
+<h2>{{message}}</h2>
+<p><a class="btn btn-success" href="/gene?user={{user}}">Generate exercise</a></p>
+<p><a class="btn btn-success" href="/massenger?user={{user}}">Add messenger</a></p>
+<p><a class="btn btn-success" href="/">Exit</a></p>
+
+{% endblock %}

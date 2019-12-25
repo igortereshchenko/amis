@@ -1,0 +1,45 @@
+{% extends "admin.html" %}
+
+{% block title %}complex CRUD{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Complex_name</th>
+            <th scope="col">Complex_level</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for complex in complexAll%}
+        <tr>
+            <td> {{complex.complex_name}}</td>
+            <td> {{complex.complex_level}}</td>
+            <td>
+                <a href="/complex_update?name={{complex.complex_name}}"
+                   title="edit button">
+                    <button type="button" class="btn btn-warning" name="btn_edit_complex"
+                            data-complex-name="{{complex.complex_name}}">Edit
+                    </button>
+                </a>
+                <a href="/delete_complex?name={{complex.complex_name}}"
+                   title="delete button">
+                    <button type="button" class="btn btn-danger" name="btn_delete_complex"
+                            data-complex-name="{{complex.complex_name}}">Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <a href="/complex_create" title="new complex button">
+                    <button type="button" class="btn btn-success" name="btn_new_complex">New complex</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

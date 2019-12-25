@@ -1,0 +1,28 @@
+{% extends "admin.html" %}
+
+{% block title %}users CRUD{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">username</th>
+            <th scope="col">age</th>
+            <th scope="col">pass</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for complex in complexAll%}
+        <tr>
+            <td> {{complex.user_name}}</td>
+            <td> {{complex.age}}</td>
+            <td> {{complex.pasword}}</td>
+
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% endblock %}
