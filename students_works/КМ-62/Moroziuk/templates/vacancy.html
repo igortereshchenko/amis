@@ -1,0 +1,89 @@
+
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+
+label {
+  padding: 4px 4px 4px 0;
+  display: block;
+}
+
+input[type=text], input[type=number], select {
+  width: 80%;
+  padding: 8px 8px;
+  margin: 0 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type=submit] {
+  width: 80%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form class=""
+               action="{{url_for('vacancy')}}"
+               method="post">
+                {{ form.id }}
+                {{ form.name.label }}
+                {{ form.name }}
+                {{ form.duties.label }}
+                {{ form.duties }}
+                {{ form.salary.label }}
+                {{ form.salary }}
+                {{ form.description.label }}
+                {{ form.description }}
+                {{ form.profession_id.label }}
+                {{ form.profession_id }}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="table-responsive col-md-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Duties</th>
+                        <th scope="col">Salary</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Profession</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tr>
+                {% for vacancy in vacancies %}
+                    <td> {{vacancy.name }} </td>
+                    <td> {{vacancy.duties}} </td>
+                    <td> {{vacancy.salary }} </td>
+                    <td> {{vacancy.description}}</td>
+                    <td> {{vacancy.profession_id }} </td>
+                    <td><a href="/vacancy/edit/{{vacancy.id}}" class="btn btn-success">Edit</a> </td>
+                    <td><a href="/vacancy/delete/{{vacancy.id}}" class="btn btn-danger">Delete</a> </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+         </div>
+     </div>
+</div>
+
+
+{% endblock %}

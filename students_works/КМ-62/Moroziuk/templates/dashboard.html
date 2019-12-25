@@ -1,0 +1,38 @@
+
+{% extends "index.html" %}
+
+{% block content %}
+
+    <h1>List of skills and how many users have them</h1>
+    <div id="bar" class="bar">
+    </div>
+
+    <h2>User with count of their skills</h2>
+    <div id="pie" class="bar">
+    </div>
+
+    <script src="{{ url_for('static', filename='js/d3.v5.min.js') }}"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+    <script type="text/javascript">
+
+        var data1 = [{
+          labels: {{ lab1 | tojson }},
+          values: {{ val1 | tojson }},
+          type: 'pie'
+        }];
+
+        var data2 = [{
+          x: {{ lab2 | tojson }},
+          y: {{ val2 | tojson }},
+          type: 'bar'
+        }];
+
+        Plotly.newPlot('pie', data1, {}, {showSendToCloud:true});
+
+        Plotly.newPlot('bar', data2, {}, {showSendToCloud:true});
+
+    </script>
+
+{% endblock %}
