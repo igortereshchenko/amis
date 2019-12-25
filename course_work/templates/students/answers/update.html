@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<form method="post">
+    {{form.hidden_tag()}}
+    <div class="form-group">
+        {{form.Questions.label}}
+        {{form.Questions(class_="form-control")}}
+    </div>
+    <div class="form-group">
+        {{form.Answer_for_question.label}}
+        {{form.Answer_for_question(class_="form-control")}}
+    </div>
+    <div class="form-group">
+        {{form.Student_answer.label}}
+        {{form.Student_answer(class_="form-control")}}
+    </div>
+    <div class="form-group">
+        {{form.User_faculty.label}}
+        {{form.User_faculty(class_="form-control")}}
+    </div>
+    {{form.Submit(class_="btn btn-success")}}
+</form>
+{% endblock %}

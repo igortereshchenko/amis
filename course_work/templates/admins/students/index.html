@@ -1,0 +1,38 @@
+{% extends 'admin_main.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center" id="content__page__header">
+    <h3>Students</h3>
+    <meta http-equiv="refresh" content="3">
+    <a class="btn btn-primary" href="{{url_for('admins_new_student')}}">Register the new student</a>
+</div>
+<div id="content__page__body">
+    <table class="table">
+        <thead>
+        <tr>
+            <th style="width: 30%">Student's full name</th>
+            <th style="width: 30%">Student's email</th>
+            <th style="width: 20%">Student's password</th>
+            <th style="width: 20%">Student's faculty</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in users: %}
+        <tr>
+            <td>{{student.UserFullName}}</td>
+            <td>{{student.User_email}}</td>
+            <td>{{student.User_password}}</td>
+            <td>{{student.User_faculty}}</td>
+            <td class="d-flex justify-content-end">
+                <a class="btn btn-success" href="{{url_for('admins_update_student', uuid=student.User_email)}}">Edit</a>
+                <form action="{{url_for('admins_delete_student', uuid=student.User_email)}}" class="delete-record"
+                      method="post">
+                    <input class="btn btn-danger" type="submit" value="Delete"/>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
