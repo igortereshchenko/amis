@@ -3,15 +3,11 @@ import sqlalchemy.sql as sql
 from sqlalchemy import func
 from dao.orm.entities import *
 from dao.db import PostgresDb
-from datetime import date
 from forms.apply_form import ApplyForm
 from forms.teacher_form import TeacherForm
 from forms.group_form import GroupForm
 from forms.subject_form import SubjectForm
 from forms.scedule_form import SceduleForm
-from forms.car_form import CarForm
-from forms.univer_form import UniverForm
-from forms.work_form import Work1Form
 from forms.search_group_form import GroupSearchForm
 import json
 import plotly
