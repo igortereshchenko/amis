@@ -30,6 +30,11 @@ class Login:
         self.isLogged = True
         self.isAdmin = isAdmin
 
+    def Logout(self):
+        self.name = ""
+        self.password = ""
+        self.isLogged = False
+        self.isAdmin = False
 
 login = Login()
 
@@ -621,6 +626,11 @@ def delete_discipline():
             db.sqlalchemy_session.commit()
 
             return redirect(url_for('index_discipline'))
+
+@app.route('/out')
+def logout():
+    login.Logout()
+    return redirect(url_for('root'))
 
 
 if __name__ == '__main__':
