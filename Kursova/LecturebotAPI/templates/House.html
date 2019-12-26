@@ -1,0 +1,78 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+label {
+  padding: 4px 4px 4px 0;
+  display: block;
+}
+input[type=text], select {
+  width: 80%;
+  padding: 8px 8px;
+  margin: 0 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+    }
+input[type=submit] {
+  width: 80%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form class=""
+               action="{{url_for('forhouse')}}"
+               method="post">
+                {{ form. build_num.label }}
+                {{ form. build_num }}
+                {{ form.adress.label }}
+                {{ form.adress }}
+                {{ form.floors.label }}
+                {{ form.floors }}
+                {{ form.years.label }}
+                {{ form.years }}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="table-responsive col-md-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">build_num</th>
+                        <th scope="col">adress</th>
+                         <th scope="col">floors</th>
+                        <th scope="col">years</th>
+                    </tr>
+                </thead>
+                <tr>
+                {% for House in  houses  %}
+                    <td> {{House.build_num}} </td>
+                    <td> {{House.adress}} </td>
+                    <td> {{House.floors}} </td>
+                    <td> {{House.years}} </td>
+                    <td><a href="/House/edit/{{House.build_num}}" class="btn btn-success">Edit</a> </td>
+                    <td><a href="/House/delete/{{House.build_num}}" class="btn btn-danger">Delete</a> </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+         </div>
+     </div>
+</div>
+
+
+{% endblock %}
