@@ -64,7 +64,7 @@ def req3(cl1, cl2, cl3):
     return res
 
 def req4(cl1, cl2, cl3):
-    res = session.query(cl2.id, cl1.name, cl1.name, cl3.name) \
+    res = session.query(cl2.id, cl1.name, cl3.name) \
         .select_from(cl1) \
         .join(cl2) \
         .join(cl3) \

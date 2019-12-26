@@ -107,7 +107,7 @@ class Vacancy(Base):
     salary = Column(Float)
     description = Column(String)
     created_at = Column(Date)
-    profession_id = Column(Integer)
+    profession_id = Column(Integer, ForeignKey('profession.id', ondelete="CASCADE", onupdate="CASCADE"))
 
     def __init__(self, id, name, duties, salary, description, created_at, profession_id):
         self.id = id

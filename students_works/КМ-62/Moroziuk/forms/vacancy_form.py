@@ -10,7 +10,7 @@ class VacancyForm(FlaskForm):
         validators.DataRequired("Please enter name."),
     ])
 
-    duties = StringField("Dutis: ",[
+    duties = StringField("Duties: ",[
         validators.DataRequired("Please enter duties."),
     ])
 

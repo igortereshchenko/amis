@@ -7,6 +7,6 @@ class ProfessionSkillForm(FlaskForm):
 
    skill_id = SelectField("skill: ", choices=[], coerce=int)#,[validators.DataRequired(),])
 
-   profession = SelectField("profession: ", choices=[], coerce=int)#,[validators.DataRequired(),])
+   profession_id = SelectField("profession: ", choices=[], coerce=int)#,[validators.DataRequired(),])
 
    submit = SubmitField("Save")

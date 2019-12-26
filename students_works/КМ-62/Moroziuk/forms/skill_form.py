@@ -6,7 +6,7 @@ class SkillForm(FlaskForm):
    id = HiddenField("Id")
 
    name = StringField("Skill name: ",[
-                                    validators.DataRequired("Please enter skill name."),
+        validators.DataRequired("Please enter skill name."),
    ])
 
    submit = SubmitField("Save")

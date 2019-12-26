@@ -39,7 +39,7 @@ input[type=submit]:hover {
     <div class="row">
         <div class="col-md-4">
             <form class=""
-               action="{{url_for('professionskill')}}"
+               action="{{url_for('profession_skill')}}"
                method="post">
                 {{ form.id }}
                 {{ form.profession_id.label }}
@@ -62,8 +62,8 @@ input[type=submit]:hover {
 
                     <td> {{professionskill.profession_name }} </td>
                     <td> {{professionskill.skill_name}} </td>
-                    <td><a href="/professionskill/edit/{{professionskill.id}}" class="btn btn-success">Edit</a> </td>
-                    <td><a href="/professionskill/delete/{{professionskill.id}}" class="btn btn-danger">Delete</a> </td>
+                    <td><a href="/profession_skill/edit/{{professionskill.id}}" class="btn btn-success">Edit</a> </td>
+                    <td><a href="/profession_skill/delete/{{professionskill.id}}" class="btn btn-danger">Delete</a> </td>
                 </tr>
                 {% endfor %}
 

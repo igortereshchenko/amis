@@ -1,0 +1,66 @@
+
+{% extends "index.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="table-responsive col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Category name</th>
+                        <th scope="col">Avarage salary</th>
+                    </tr>
+                </thead>
+                <tr>
+                    <td>first</td>
+                    <td>3000</td>
+                </tr>
+                <tr>
+                    <td>second</td>
+                    <td>5000</td>
+                </tr>
+                <tr>
+                    <td>third</td>
+                    <td>7500</td>
+                </tr>
+                <tr>
+                    <td>forth</td>
+                    <td>11000</td>
+                </tr>
+                <tr>
+                    <td>fifth</td>
+                    <td>25000</td>
+                </tr>
+                <tr>
+                    <td>sixth</td>
+                    <td>64000</td>
+                </tr>
+                <tr>
+                    <td>seventh</td>
+                    <td>120000</td>
+                </tr>
+            </table>
+        </div>
+        <div class="table-responsive col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Category name</th>
+                        <th scope="col">Vacancy name</th>
+                    </tr>
+                </thead>
+                <tr>
+                {% for vacancy in vacancies %}
+                    <td> {{vacancy.category }} </td>
+                    <td> {{vacancy.name}} </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+         </div>
+     </div>
+</div>
+
+{% endblock %}

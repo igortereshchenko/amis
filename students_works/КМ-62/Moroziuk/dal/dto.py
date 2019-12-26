@@ -12,3 +12,4 @@ class ProfessionSkillDTO:
         self.id = id
         self.profession_name = profession_name
         self.skill_name = skill_name
+
