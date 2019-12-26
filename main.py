@@ -473,7 +473,7 @@ def edit_scedule():
             scedule = db.sqlalchemy_session.query(Scedule).filter(
                 Scedule.times == form.times.data,
                 Scedule.days == form.days.data,
-                Scedule.group_id_fk == form.old_group.data).one()
+                Scedule.group_id_fk == form.group_id_fk.data).one()
 
             # update fields from form data
             scedule.group_id_fk = form.group_id_fk.data
