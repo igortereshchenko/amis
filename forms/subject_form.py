@@ -1,10 +1,11 @@
 from flask_wtf import Form
-from wtforms import StringField, SubmitField, IntegerField, BooleanField
+from wtforms import StringField, SubmitField, IntegerField, BooleanField, HiddenField
 from datetime import date
 from wtforms import validators
 
 
 class SubjectForm(Form):
+    old_name = HiddenField()
 
     subject_name = StringField("name: ", [
         validators.DataRequired("Please enter subject`s name."),

@@ -312,6 +312,7 @@ def edit_subject():
         # fill form and send to discipline
         form.subject_name.data = subject.subj_name
         form.subject_hours.data = subject.subj_hours
+        form.old_name.data = subject.subj_name
 
         return render_template('subject_form.html', form=form, form_name="Edit subject", action="edit_subject")
 
@@ -324,7 +325,7 @@ def edit_subject():
             db = PostgresDb()
             # find discipline
             subject = db.sqlalchemy_session.query(Subject).filter(
-                Subject.subj_name == form.subject_name.data).one()
+                Subject.subj_name == form.old_name.data).one()
 
             # update fields from form data
             subject.subj_name = form.subject_name.data
