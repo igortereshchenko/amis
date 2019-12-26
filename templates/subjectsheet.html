@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Subject Sheets</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
+<!-- D3.js -->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <ul class="navbar-nav">
+    <li class="nav-item"><a class="nav-link" href="/groups">Groups</a></li>
+    <li class="nav-item"><a class="nav-link" href="/subjects">Subjects</a></li>
+    <li class="nav-item"><a class="nav-link" href="/students">Students</a></li>
+    <li class="nav-item"><a class="nav-link" href="/subjectsheet">SubjectSheet</a></li>
+    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+  </ul>
+
+</nav>
+
+<div class="container">
+
+    <h1>Subject Sheet</h1>
+
+          <div>
+              {% for row in data %}
+                  <div class="border p-1 m-1">
+                      <form action = "/subjectsheet" method = post>
+                          <p>
+                          {{row.subj_name, row.group_code, row.study_book, row.date_of_mark, row.mark}}
+                            <button name="del" type="submit" class="mh-100 del" value="{{row.subj_name}}█{{row.group_code}}█{{row.study_book}}█{{row.date_of_mark}}">Delete</button>
+                            <button name="edit" type="submit" class="mh-100 edit" value="{{row.subj_name}}█{{row.group_code}}█{{row.study_book}}█{{row.date_of_mark}}">Edit</button>
+                          </p>
+                      </form>
+                  </div>
+              {% endfor %}
+          </div>
+
+    <form action = "/subjectsheet" method = post>
+       <fieldset>
+           {{ form.hidden_tag() }}
+           <legend>Add a Subject Sheet</legend>
+           <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+              <div>
+                  {{ form.subj_name.label }}      {{ form.subj_name }}
+                  {{ form.group_code.label }}      {{ form.group_code }}
+                  {{ form.study_book.label }}      {{ form.study_book }}
+                  {{ form.date_of_mark.label }}      {{ form.date_of_mark }}
+                  {{ form.mark.label }}      {{ form.mark }}
+              </div>
+
+             {{ form.submit }}
+          </div>
+
+       </fieldset>
+    </form>
+
+</div>
+
+</body>
+</html>
