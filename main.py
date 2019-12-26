@@ -63,17 +63,17 @@ def dashboard():
         data[label] = [pie]
         pie_labels.append(label)
 
-    # points = db.sqlalchemy_session.query(Car.model, Car.manuf).distinct(
-    #     Car.model, Car.manuf).filter(Car.model != '').all()
+    points = db.sqlalchemy_session.query(Subject.subj_name, Subject.subj_hours).distinct(
+        Subject.subj_name, Subject.subj_hours).filter(Subject.subj_name != '').all()
 
-    # semester, final = zip(*points)
-    # bar = go.Scatter(
-    #     x=semester,
-    #     y=final,
-    #     mode='markers'
-    # )
+    semester, final = zip(*points)
+    bar = go.Scatter(
+        x=semester,
+        y=final,
+        mode='markers'
+    )
 
-    # data["bar"].append(bar)
+    data["bar"].append(bar)
     json_data = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template('dashboard.html', json=json_data, pie_labels=pie_labels, group_form=group_form)
