@@ -540,6 +540,7 @@ def findClass(input, data, classes):
 
 @app.route('/analysis', methods=['GET', 'POST'])
 def analysis():
+    db = PostgresDb()
     a = db.sqlalchemy_session.query(Scedule).all()
     teacher = [[2], [6], [10]]
     classes = ['Mostly-free', 'Middle-packed', 'Packed']
