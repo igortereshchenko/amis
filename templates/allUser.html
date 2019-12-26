@@ -1,0 +1,53 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <!-- Editable table -->
+    <div class="card">
+        <h3 class="card-header text-center font-weight-bold text-uppercase py-4">{{ name }}</h3>
+        <div class="card-body">
+            <div id="table" class="table-editable">
+      <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-success"><i
+              class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
+                <table class="table table-bordered table-responsive-md table-striped text-center">
+                    <thead>
+                    <tr>
+                        <th class="text-center">user id</th>
+                        <th class="text-center">name</th>
+                        <th class="text-center">surname</th>
+                        <th class="text-center">birthday</th>
+                        <th class="text-center">edit</th>
+                        <th class="text-center">Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in users %}
+                        <tr>
+                            <td class="pt-3-half" contenteditable="true">{{row.user_id}}</td>
+                            <td class="pt-3-half" contenteditable="true">{{row.name}}</td>
+                            <td class="pt-3-half" contenteditable="true">{{row.surname}}</td>
+                            <td class="pt-3-half" contenteditable="true">{{row.birthday}}</td>
+                            <td>
+                                <span class="table-remove" ><button type="button" class="btn btn-danger btn-rounded btn-sm my-0" >
+                                    <a href="https://laboratoryevent.herokuapp.com/edit/user?user_id={{ row.user_id }}">edit</a></button></span>
+{#                                    <a href="http://127.0.0.1:5000/edit/user?user_id={{ row.user_id }}">edit</a></button></span>#}
+                            </td>
+                            <td>
+                                <span class="table-remove"><button type="button"
+                                                                   class="btn btn-danger btn-rounded btn-sm my-0" >
+                                    <a href="https://laboratoryevent.herokuapp.com/delete/user?user_id={{ row.user_id }}">Remove</a></button></span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    <!-- This is our clonable table line -->
+
+                    </tbody>
+                </table>
+            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0" allign="center">
+                                    <a href="https://laboratoryevent.herokuapp.com/create/user">Create</a></button></span>
+            </div>
+        </div>
+    </div>
+    <!-- Editable table -->
+{% endblock %}

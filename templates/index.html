@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+</head>
+<body class="bg-dark">
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <ul class="navbar-nav">
+        <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/all/user">User</a>
+            {#<a class="nav-link" href="http://127.0.0.1:5000/all/user">User</a>#}
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/all/event">Event</a>
+            {#  <a class="nav-link" href="http://127.0.0.1:5000/all/event">Event</a>#}
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/all/plan">Plan Of Event</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/all/bonus">Bonus</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/search">Search</a>
+        </li>
+         <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/correlations">Correlations</a>
+        </li>
+         <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/claster">Clasterization</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="https://laboratoryevent.herokuapp.com/clasification">ai</a>
+        </li>
+    </ul>
+</nav>
+
+
+{% block content %}{% endblock %}
+
+</body>
+</html>
