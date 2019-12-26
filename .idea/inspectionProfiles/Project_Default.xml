@@ -4,7 +4,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="41">
+          <list size="44">
             <item index="0" class="java.lang.String" itemvalue="db-sqlite3" />
             <item index="1" class="java.lang.String" itemvalue="pygame" />
             <item index="2" class="java.lang.String" itemvalue="python-dateutil" />
@@ -46,6 +46,9 @@
             <item index="38" class="java.lang.String" itemvalue="SimpleITK" />
             <item index="39" class="java.lang.String" itemvalue="db" />
             <item index="40" class="java.lang.String" itemvalue="cql" />
+            <item index="41" class="java.lang.String" itemvalue="tensorflow" />
+            <item index="42" class="java.lang.String" itemvalue="grpcio" />
+            <item index="43" class="java.lang.String" itemvalue="neupy" />
           </list>
         </value>
       </option>
