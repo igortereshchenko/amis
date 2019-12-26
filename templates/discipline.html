@@ -1,0 +1,48 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <meta http-equiv="refresh" content="5">
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">name</th>
+            <th scope="col">teacher name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for discipline in disciplines%}
+        <tr>
+            <td> {{discipline.name}}</td>
+            <td> {{discipline.teacher_name}}</td>
+            <td>
+                <a href="/edit_discipline?name={{discipline.name}}"
+                   title="edit button">
+                    <button type="button" class="btn btn-warning" name="btn_edit_discipline"
+                            data-user_id="{{discipline.name}}">Edit
+                    </button>
+                </a>
+                <a href="/delete_discipline?name={{discipline.name}}"
+                   title="delete button">
+                    <button type="button" class="btn btn-danger" name="btn_delete_discipline"
+                            data-user_id="{{discipline.name}}">Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <a href="/new_discipline" title="new discipline button">
+                    <button type="button" class="btn btn-success" name="btn_new_discipline">New discipline</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <meta http-equiv="refresh" content="5">
+
+<br><br>
+<h1>Pie plot</h1>
+<br>
+<h1>Количество студентов в группе каждого университета и факультета</h1>
+<div class="bar">
+    {% for label in pie_labels %}
+        <h2>{{label}}</h2>
+
+        <div id="{{label}}" class="bar">
+        </div>
+
+    {% endfor %}
+</div>
+
+<br><br><br>
+
+<h1>Scatter plot</h1>
+<br>
+<h1>Значение баллов у студентов до экзамена/зачета и после</h1>
+<div id="bar" class="bar">
+</div>
+
+<script src="{{ url_for('static', filename='js/d3.v5.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plotly-latest.min.js') }}"></script>
+
+
+<script type="text/javascript">
+        var graphs = {{json | safe}};
+        for(var pie_id in graphs["pie"]) {
+            Plotly.plot(pie_id,
+                        graphs["pie"][pie_id],{});
+        }
+        Plotly.plot("bar",
+                    graphs["bar"],{});
+
+
+</script>
+
+{% endblock %}

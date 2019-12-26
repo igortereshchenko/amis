@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Workshop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="/student">Student</a></li>
+        <li class="nav-item"><a class="nav-link" href="/teacher">Teacher</a></li>
+        <li class="nav-item"><a class="nav-link" href="/task">Task</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student_task">Student Task</a></li>
+        <li class="nav-item"><a class="nav-link" href="/discipline">Discipline</a></li>
+        <li class="nav-item"><a class="nav-link" href="/out">LogOut</a></li>
+    </ul>
+
+</nav>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+              alert('{{message}}');
+            </script>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container">
+
+    {% block content %}<br>
+    <h1>Welcome page</h1>
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

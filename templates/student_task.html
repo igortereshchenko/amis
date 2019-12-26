@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <meta http-equiv="refresh" content="5">
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">student name</th>
+            <th scope="col">student group</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks%}
+        <tr>
+            <td> {{task.task_id }}</td>
+            <td> {{task.student_name }}</td>
+            <td> {{task.student_group }}</td>
+            <td>
+                <a href="/edit_student_task?id={{task.task_id}}&s_name={{task.student_name}}&s_group={{task.student_group}}" title="edit button">
+                    <button type="button" class="btn btn-warning" name="btn_edit_user" data-user_id="{{task.task_id}}">
+                        Edit
+                    </button>
+                </a>
+                <a href="/delete_student_task?id={{task.task_id}}&s_name={{task.student_name}}&s_group={{task.student_group}}" title="delete button">
+                    <button type="button" class="btn btn-danger" name="btn_delete_user" data-user_id="{{task.task_id}}">
+                        Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <a href="/new_student_task" title="new student_task button">
+                    <button type="button" class="btn btn-success" name="btn_new_student_task">New task</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--<script src="{{ url_for('static', filename='js/skill.js') }}"></script>-->
+
+{% endblock %}
