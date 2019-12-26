@@ -1,0 +1,101 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<!--https://www.codeply.com/go/nhbdi2FkJm-->
+
+
+<div class="col-md-6 mx-auto">
+
+    <!-- form card login -->
+    <div class="card rounded-0">
+
+        <div class="card-header">
+            <h3 class="mb-0">{{form_name}}</h3>
+        </div>
+        <div class="card-body">
+
+            <form class="form" method="POST">
+                {{ form.hidden_tag() }}
+
+
+            <div class="form-group">
+                {{ form.good_name.label }}
+                {{ form.good_name(class_="form-control") }}
+
+                {% if form.good_name.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.good_name.errors %}
+                             <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {%endif%}
+            </div>
+
+
+            <div class="form-group">
+                {{ form.good_model.label }}
+                {{ form.good_model(class_="form-control") }}
+
+                {% if form.good_model.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.good_model.errors %}
+                             <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {%endif%}
+            </div>
+            <div class="form-group">
+                {{ form.price.label }}
+                {{ form.price(class_="form-control") }}
+
+                {% if form.price.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.price.errors %}
+                             <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {%endif%}
+            </div>
+            <div class="form-group">
+                {{ form.stores.label }}
+                {{ form.stores(class_="form-control") }}
+
+                {% if form.stores.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.stores.errors %}
+                             <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {%endif%}
+            </div>
+            <div class="form-group">
+                {{ form.users.label }}
+                {{ form.users(class_="form-control") }}
+
+                {% if form.users.errors%}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in form.users.errors %}
+                             <div>{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {%endif%}
+            </div>
+
+
+
+                {{ form.submit(class_="btn btn-success") }}
+            </form>
+        </div>
+        <!--/card-block-->
+    </div>
+    <!-- /form card login -->
+
+</div>
+
+</div>
+
+
+
+
+{% endblock %}

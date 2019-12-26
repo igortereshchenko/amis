@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+
+{% block content %}
+ <div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">good_id</th>
+                <th scope="col">good_name</th>
+                <th scope="col">good_model</th>
+                <th scope="col">price</th>
+                <th scope="col">stores</th>
+                <th scope="col">users</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in result %}
+            <tr >
+                <td> {{item.good_id}} </td>
+                <td> {{item.good_name}} </td>
+                <td> {{item.good_model}} </td>
+                <td> {{item.price}} </td>
+                <td> {{item.stores}} </td>
+                <td> {{item.users}} </td>
+                <td>
+                    <a href="/edit_goods/{{item.good_id}}" type="button" class="btn btn-warning" name="btn_edit_person" >Edit</a>
+                    <a href="/delete_goods/{{item.good_id}}" type="button" class="btn btn-warning" name="btn_edit_person" >Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td> <a href="/new_goods" type="button" class="btn btn-warning">New Good</a> </td>
+            </tr>
+        </tbody>
+    </table>
+ </div>
+<script src="{{ url_for('static', filename='js/person.js') }}"></script>
+{% endblock %}
