@@ -335,20 +335,21 @@ def registration():
     form = RegistrationForm()
     if request.method == 'POST':
         if form.validate():
-            new_user = User(
-                user_email=form.user_email.data,
-                user_password=form.user_confirm_password.data
-            )
-            db.session.add(new_user)
-            db.session.commit()
-            newSession(new_user.user_email, new_user.user_password)
-            return render_template('success.html')
+            try:
+                new_user = User(
+                    user_name=form.user_name.data,
+                    user_password=form.user_confirm_password.data
+                )
+                db.session.add(new_user)
+                db.session.commit()
+                newSession(new_user.user_name, new_user.user_password)
+            except:
+                form.user_name.errors = ['user  exist']
+                return render_template('registration.html', form=form)
         else:
-            return render_template('registration.html', form=form)
+            return render_template('index.html', form=form)
 
     return render_template('registration.html', form=form)
-
-
 @app.route('/all_users')
 def all_users():
     if session['role'] == 'admin':
