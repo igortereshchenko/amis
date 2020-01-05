@@ -1,5 +1,6 @@
 import os
 import random
+import requests
 
 from flask import Flask, render_template, request, redirect
 from flask_migrate import Migrate, MigrateCommand
@@ -17,6 +18,7 @@ from forms.user_has_skill_form import UserSkillForm
 from forms.profession_form import ProfessionForm
 from forms.profession_has_skill_form import ProfessionSkillForm
 from forms.vacancy_form import VacancyForm
+from  forms.real_form import SearchForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_string
@@ -307,6 +309,25 @@ def classification():
 if __name__ == '__main__':
     app.run(debug=True)
 
+@app.route('/real', methods=['GET', 'POST'])
+def real():
+    form = SearchForm(request.form)
+    if request.method == 'POST':
+        input = form.search.data
+        url = 'https://rabota.ua/zapros/'+input+'/%d0%ba%d0%b8%d0%b5%d0%b2'
+        output = requests.get(url).text
+        first_string = output.find('"fd-f1">')
+        second_string = output.find('<aside class="f-vacancylist-rightwrap-outer">')
+        etap_1 = output[first_string+8:second_string]
+        h1 = etap_1.find('<dd>')
+        h2 = etap_1.find('Следующая')
+        t1 = etap_1[h1:h2+9]
+        etap_2 = etap_1.replace(t1, '').replace('Горячая вакансия поднятая работодателем вверх списка', '')
+        if etap_2.__contains__('.f-404'):
+            return render_template('real_vac.html', form=form,  vacancies='not found')
+        else:
+            return render_template('real_vac.html', form=form,  vacancies=etap_2)
+    return render_template('real_vac.html', form=form,  vacancies='')
 
 #if __name__ == '__main__':
 #    manager.run()

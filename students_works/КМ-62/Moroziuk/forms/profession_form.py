@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, StringField, validators, SubmitField, IntegerField
-from wtforms.widgets import html5
+from wtforms import HiddenField, StringField, validators, SubmitField
+from wtforms.fields.html5 import IntegerField
 
 
 class ProfessionForm(FlaskForm):
@@ -10,7 +10,8 @@ class ProfessionForm(FlaskForm):
         validators.DataRequired("Please enter name."),
    ])
 
-   minimal_work_expirience = IntegerField("Minimal work expirience: ", widget=html5.NumberInput()
+   minimal_work_expirience = IntegerField("Minimal work expirience: ",
+        [validators.DataRequired("Minimal work expirience required"), validators.NumberRange(min=0, max=100)]
     )
 
    minimal_education = StringField("Minimal education: ", [

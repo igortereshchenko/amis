@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, StringField, validators, SubmitField, DateTimeField
+from wtforms import HiddenField, StringField, validators, SubmitField
+from wtforms.fields.html5 import DateField
 
 
 class UserForm(FlaskForm):
@@ -13,7 +14,7 @@ class UserForm(FlaskForm):
        validators.DataRequired("Please enter your name."),
    ])
 
-   birthday = DateTimeField("Birthday: ", [
+   birthday = DateField("Birthday: ", [
        validators.DataRequired("Please enter your birthday.")])
 
    city = StringField("City: ",[
