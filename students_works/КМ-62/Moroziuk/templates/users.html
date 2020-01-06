@@ -1,0 +1,84 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+
+label {
+  padding: 4px 4px 4px 0;
+  display: block;
+}
+
+input[type=text],input[type=date], select {
+  width: 80%;
+  padding: 8px 8px;
+  margin: 0 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type=submit] {
+  width: 80%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form class=""
+               action="{{url_for('user')}}"
+               method="post">
+                {{ form.id }}
+                {{ form.first_name.label }}
+                {{ form.first_name }}
+                {{ form.second_name.label }}
+                {{ form.second_name }}
+                {{ form.birthday.label }}
+                {{ form.birthday }}
+                {{ form.city.label }}
+                {{ form.city }}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="table-responsive col-md-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">First name</th>
+                        <th scope="col">Second name</th>
+                        <th scope="col">Birthday</th>
+                        <th scope="col">City</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tr>
+                {% for user in users %}
+
+                    <td> {{user.first_name }} </td>
+                    <td> {{user.second_name}} </td>
+                    <td> {{user.birthday.strftime('%Y-%m-%d') }}   </td>
+                    <td> {{user.city}}</td>
+                    <td><a href="/user/edit/{{user.id}}" class="btn btn-success">Edit</a> </td>
+                    <td><a href="/user/delete/{{user.id}}" class="btn btn-danger">Delete</a> </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+         </div>
+     </div>
+</div>
+
+{% endblock %}

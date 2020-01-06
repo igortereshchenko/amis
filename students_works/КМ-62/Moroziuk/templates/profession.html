@@ -1,0 +1,95 @@
+
+{% extends "index.html" %}
+
+{% block content %}
+
+<style>
+
+label {
+  padding: 4px 4px 4px 0;
+  display: block;
+}
+
+input[type=text], select {
+  width: 80%;
+  padding: 8px 8px;
+  margin: 0 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type=number], select {
+  width: 80%;
+  padding: 8px 8px;
+  margin: 0 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type=submit] {
+  width: 80%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form class=""
+               action="{{url_for('profession')}}"
+               method="post">
+                {{ form.id }}
+                {{ form.name.label }}
+                {{ form.name }}
+                {{ form.minimal_work_expirience.label }}
+                {{ form.minimal_work_expirience }}
+                {{ form.minimal_education.label }}
+                {{ form.minimal_education }}
+                {{ form.category.label }}
+                {{ form.category }}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="table-responsive col-md-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Minimal work expirience</th>
+                        <th scope="col">Minimal education</th>
+                        <th scope="col">Category</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tr>
+                {% for profession in professions %}
+
+                    <td> {{profession.name }} </td>
+                    <td> {{profession.minimal_work_expirience}} </td>
+                    <td> {{profession.minimal_education }}</td>
+                    <td> {{profession.category}}</td>
+                    <td><a href="/profession/edit/{{profession.id}}" class="btn btn-success">Edit</a> </td>
+                    <td><a href="/profession/delete/{{profession.id}}" class="btn btn-danger">Delete</a> </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+         </div>
+     </div>
+</div>
+
+
+{% endblock %}
+
