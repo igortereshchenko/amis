@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+
+{% block content %}
+ <div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">user_name</th>
+                <th scope="col">user_password</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in result %}
+            <tr >
+                <td> {{item.user_name}} </td>
+                <td> {{item.user_password}} </td>
+                <td><a href="/edit_user/{{item.user_name}}" type="button" class="btn btn-warning"  >Edit</a></td>
+                <td><a href="/delete_user/{{item.user_name}}" type="button" class="btn btn-warning">Delete</a> </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    <td> <a href="/new_user" type="button" class="btn btn-warning">New User</a> </td>
+    </table>
+ </div>
+<script src="{{ url_for('static', filename='js/person.js') }}"></script>
+{% endblock %}

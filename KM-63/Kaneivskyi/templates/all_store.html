@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+
+{% block content %}
+ <div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">store_id</th>
+                <th scope="col">store_name</th>
+                <th scope="col">store_link</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in result %}
+            <tr >
+                <td> {{item.store_id}} </td>
+                <td> {{item.store_name}} </td>
+                <td> {{item.store_link}} </td>
+                <td>
+                    <a href="/edit_store/{{item.store_name}}" type="button" class="btn btn-warning" name="btn_edit_person" >Edit</a>
+                    <a href="/delete_store/{{item.store_name}}" type="button" class="btn btn-warning" name="btn_edit_person" >Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td> <a href="/new_store" type="button" class="btn btn-warning">New Store</a> </td>
+            </tr>
+        </tbody>
+    </table>
+ </div>
+<script src="{{ url_for('static', filename='js/person.js') }}"></script>
+{% endblock %}

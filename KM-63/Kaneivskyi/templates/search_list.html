@@ -1,0 +1,37 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <!-- Editable table -->
+    <div class="card">
+        <h3 class="card-header text-center font-weight-bold text-uppercase py-4">{{ name }}</h3>
+        <div class="card-body">
+            <div id="table" class="table-editable">
+      <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-success"><i
+              class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
+                <table class="table table-bordered table-responsive-md table-striped text-center">
+                    <thead>
+                    <tr><td colspan="4"><b>RESULT</b></td></tr>
+                    <tr>
+                        <th class="text-center">name</th>
+                        <th class="text-center">model</th>
+                        <th class="text-center">name_c</th>
+                        <th class="text-center">desc</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in results %}
+                        <tr>
+                            <td class="pt-3-half" >{{ row.name }}</td>
+                            <td class="pt-3-half" >{{ row.model }}</td>
+                            <td class="pt-3-half" >{{ row.name_c }}</td>
+                            <td class="pt-3-half" >{{ row.desc }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Editable table -->
+{% endblock %}
