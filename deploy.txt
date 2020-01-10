@@ -1,0 +1,2 @@
+деплой курсового проекту - https://khodos-course.herokuapp.com/
+деплой ШІ моделі - https://khodos-lab4.herokuapp.com/
