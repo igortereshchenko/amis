@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+</head>
+<body>
+
+<h1 style="margin-bottom: 50px">{{ test.test_name }}.</h1>
+
+{% for question in test.orm_questions %}
+    {% if question.answer_variants %}
+        <div class="form-control" style="margin: 20px">
+            <h3>{{ question.question_text }}</h3>
+            <ul>
+                {% for variant in question.answer_variants %}
+                    <li><h4>{{ variant.answer_variant_text }}</h4></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endfor %}

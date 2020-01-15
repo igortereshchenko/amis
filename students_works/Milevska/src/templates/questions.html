@@ -1,0 +1,60 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+ <div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Test Name</th>
+                <th scope="col">Test variant</th>
+                <th style="text-align: center" scope="col">Questions</th>
+            </tr>
+        </thead>
+        <tr>
+        {% for test in tests %}
+            <td width="150px"> {{test.test_name }} </td>
+            <td width="150px"> {{test.test_variant}} </td>
+            <td width="500px">
+                <ul>
+                    {% for question in test.orm_questions %}
+                        <form method="post" action="/question/{{ question.question_id }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <li style="margin: 7px">
+                            <div>
+                                <input name="question_text" value="{{question.question_text}}" required>
+                                    <select class="form-control" style="width: 100px; display: inline-block"  name="discipline_id">
+                                        <option class="form-control"></option>
+                                        {% for discipline in disciplines %}
+                                            <option class="form-control" value="{{ discipline.id }}" {% if discipline.id == question.discipline_id %} selected {% endif %}>{{ discipline.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                <button type="submit" class="btn btn-warning">Edit</button>
+                                <button onclick="location.href='/question/{{ question.question_id }}/delete'" type="button" class="btn btn-danger" >DEL</button>
+                                <button type="button" onclick="location.href='/questions/{{ question.question_id }}/define_discipline'" class="btn btn-success">Define discipline</button>
+                            </div>
+                            </li>
+                        </form>
+                    {% endfor %}
+                <form method="post" action="/question">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="test_id" value="{{ test.test_id }}">
+                    <input name="question_text" required>
+                    <select class="form-control" style="width: 100px; display: inline-block"  name="discipline_id">
+                        <option class="form-control"></option>
+                        {% for discipline in disciplines %}
+                            <option class="form-control" value="{{ discipline.id }}">{{ discipline.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-success">New Question</button>
+                </form>
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+ </div>
+
+
+{% endblock %}
