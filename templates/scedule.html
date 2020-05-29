@@ -1,0 +1,55 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">group id_fk</th>
+            <th scope="col">teacher_id_fk</th>
+            <th scope="col">subject_name_fk</th>
+            <th scope="col">auditorium</th>
+            <th scope="col">times</th>
+            <th scope="col">days</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for scedule in scedules%}
+        <tr>
+            <td> {{scedule.group_id_fk}}</td>
+            <td> {{scedule.teach_id_fk}}</td>
+            <td> {{scedule.subj_name_fk}}</td>
+            <td> {{scedule.auditorium}}</td>
+            <td> {{scedule.days}}</td>
+            <td> {{scedule.times}}</td>
+            <td>
+                <a href="/edit_scedule?group_id_fk={{scedule.group_id_fk}}&times={{scedule.times}}&days={{scedule.days}}" title="edit button">
+                    <button
+                            type="button" class="btn btn-warning" name="btn_edit_scedule" data-user_id="{{scedule.group_id_fk}}">Edit
+                    </button>
+                </a>
+                <a href="/delete_scedule?group_id_fk={{scedule.group_id_fk}}&times={{scedule.times}}&days={{scedule.days}}" title="delete button">
+                    <button type="button" class="btn btn-danger" name="btn_delete_scedule" data-user_id="{{scedule.group_id_fk}}">
+                        Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <a href="/new_scedule" title="new scedule button">
+                    <button type="button" class="btn btn-success" name="btn_new_scedule">New scedule</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--<script src="{{ url_for('static', filename='js/skill.js') }}"></script>-->
+
+{% endblock %}

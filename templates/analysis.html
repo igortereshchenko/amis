@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">auditorium </th>
+            <th scope="col">class</th>
+        </tr>
+        </thead>
+        <tbody>
+        {%for key in table%}
+        <tr>
+            <td> {{key}}</td>
+            <td> {{table[key]}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!--<script src="{{ url_for('static', filename='js/skill.js') }}"></script>-->
+
+{% endblock %}
